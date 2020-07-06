@@ -79,12 +79,12 @@ exports.viewpoint_create = (req, res, next) => {
 
     for (var bitmap in req.body.bitmaps) {
         var data = req.body.bitmaps[bitmap]
-        console.log(data)
+        // console.log(data)
         data["guid"] = uuid.v4();
         bitmapsArr.push(data);
     }
 
-    console.log(bitmapsArr)
+    // console.log(bitmapsArr)
 
     const comment = new Viewpoints({
         _id: new mongoose.Types.ObjectId(),

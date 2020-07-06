@@ -116,12 +116,7 @@ const snapshotSchema = new Schema({
     }
 });
 
-const component_listSchema = new Schema({
-    type: Array,
-        items: {
-            type: componentSchema
-        }
-});
+const component_listSchema = [ componentSchema ];
 
 const view_setup_hintsSchema = new Schema({
     spaces_visible: {
@@ -159,7 +154,7 @@ const coloringSchema = new Schema({
 const componentsSchema = new Schema({
     selection: component_listSchema,
 
-    coloring: coloringSchema,
+    coloring: [ coloringSchema ],
 
     visibility: visibilitySchema
 
