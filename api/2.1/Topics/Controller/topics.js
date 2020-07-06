@@ -93,7 +93,6 @@ exports.topic_create = (req, res, next) => {
         guid: uuid.v4(),
         creation_date: timestamp,
         creation_author: jwt.decode(req.headers.authorization.split(" ")[1]).id,
-        modified_author: jwt.decode(req.headers.authorization.split(" ")[1]).id,
         title: req.body.title,
         topic_type: req.body.topic_type,
         topic_status: req.body.topic_status,
@@ -132,6 +131,10 @@ exports.topic_create = (req, res, next) => {
 exports.topic_update = (req, res, next) => {
 
     const id = req.params.projectId;
+    const TopicId = req.params.topicId;
+    const timestamp = new Date(Date.now()).toISOString();
+
+    console.log(TopicId)
 
     const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
@@ -141,15 +144,27 @@ exports.topic_update = (req, res, next) => {
     Topics = conn.model("Topics", require("../Models/topics"));
     module.exports = conn;
 
-    for (const ops of req.body) {
-        updateOps[ops.propName] = ops.value;
-    };
+    var data = req.body
 
-    Topics.update({guid: req.params.topicId}, {$set: updateOps})
+    data["modified_author"] = jwt.decode(req.headers.authorization.split(" ")[1]).id
+    data["modified_date"] = timestamp
+
+    console.log(data)
+    
+    Topics.findOneAndUpdate({guid: TopicId}, {$set: req.body}, {new: true })
         .exec()
         .then(result => {
             res.status(200).json({
-                message: "Updated"
+                guid: result.guid,
+                creation_date: result.creation_date,
+                creation_author: result.creation_author,
+                topic_type: result.topic_type,
+                topic_status: result.topic_status,
+                title: result.title,
+                priority: result.priority,
+                labels: result.labels,
+                assigned_to: result.assigned_to,
+                stage: result.stage
             });
         })
         .catch(err => {

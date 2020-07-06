@@ -26,7 +26,7 @@ const projectsRoutes = require("./api/2.1/Projects/routes/projects");
 // Database connection
 
 
-mongoose.connect('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/bcfServer?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/' + process.env.MONGO_ATLAS_MAIN_SERVER + '?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology:true
   });

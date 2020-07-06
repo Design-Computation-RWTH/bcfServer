@@ -16,10 +16,14 @@ router.get("/:projectId/extensions", ProjectController.project_extensions);
 
 router.get("/:projectId/topics", TopicsController.topics_get_all);
 
-router.get("/:projectId/topics/:topicId", TopicsController.topic_get)
+router.get("/:projectId/topics/:topicId", TopicsController.topic_get);
 
 router.put("/:projectId", ProjectController.project_update);
 
+router.put("/:projectId/topics/:topicId", checkBindings, TopicsController.topic_update);
+
 router.post("/:projectId/topics", checkBindings, TopicsController.topic_create);
+
+
 
 module.exports = router;

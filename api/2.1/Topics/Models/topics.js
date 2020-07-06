@@ -41,7 +41,11 @@ const topicsSchema = new Schema({
     },
     modified_author: {
         type: String,
-        required: true
+        required: false
+    },
+    modified_date: {
+        type: Date,
+        required: false
     },
     stage: {
         type: String,
