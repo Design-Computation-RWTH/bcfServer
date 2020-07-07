@@ -20,6 +20,20 @@ router.get("/:projectId/topics", TopicsController.topics_get_all);
 
 router.get("/:projectId/topics/:topicId", TopicsController.topic_get);
 
+router.get("/:projectId/topics/:topicId/viewpoints", ViewpointsController.viewpoints_get);
+
+router.get("/:projectId/topics/:topicId/viewpoints/:viewpointId", ViewpointsController.viewpoint_get);
+
+router.get("/:projectId/topics/:topicId/viewpoints/:viewpointId/snapshot", ViewpointsController.viewpoint_get_snapshot);
+
+router.get("/:projectId/topics/:topicId/viewpoints/:viewpointId/selection", ViewpointsController.viewpoint_get_selection);
+
+router.get("/:projectId/topics/:topicId/viewpoints/:viewpointId/coloring", ViewpointsController.viewpoint_get_coloring);
+
+router.get("/:projectId/topics/:topicId/viewpoints/:viewpointId/visibility", ViewpointsController.viewpoint_get_visibility);
+
+router.get("/:projectId/topics/:topicId/viewpoints/:viewpointId/bitmaps/:bitmapId", ViewpointsController.viewpoint_get_bitmap);
+
 router.get("/:projectId/topics/:topicId/comments", CommentsController.comments_get);
 
 router.get("/:projectId/topics/:topicId/comments/:commentId", CommentsController.comment_get);

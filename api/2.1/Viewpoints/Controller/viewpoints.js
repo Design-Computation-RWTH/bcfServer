@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 
-exports.viewpoints_get =  (req, res, next) => {
+exports.viewpoints_get =  async (req, res, next) => {
 
     const id = req.params.projectId;
     const topicId = req.params.topicId;
@@ -12,12 +12,35 @@ exports.viewpoints_get =  (req, res, next) => {
         useUnifiedTopology:true
     });
 
-    Comments = conn.model("Comments", require("../Models/comments"));
+    Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
+    Comments = conn.model("Comments", require("../../Comments/Models/comments"))
     module.exports = conn;
 
+    var viewpointsArr = []
 
-    Comments.find({topic_guid: topicId})
-    .select("guid date author comment topic_guid -_id")
+    await Comments.find({topic_guid: topicId})
+    .select("viewpoint_guid -_id")
+    .exec()
+    .then(doc => {
+        for(var key in doc) {
+            data = doc[key]["viewpoint_guid"]
+            console.log(data)
+            if (data) {
+                viewpointsArr.push(data)
+                
+            }
+            
+        }
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+    console.log(viewpointsArr)
+
+    Viewpoints.find({guid: { $in: viewpointsArr}})
+    .select("index guid orthogonal_camera perspective_camera lines clipping_planes bitmaps snapshot components -_id")
     .exec()
     .then(doc => {
         res.status(200).json(doc);
@@ -33,22 +56,163 @@ exports.viewpoints_get =  (req, res, next) => {
 exports.viewpoint_get =  (req, res, next) => {
 
     const id = req.params.projectId;
-    const commentId = req.params.commentId;
+    const viewpointId = req.params.viewpointId;
 
     const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
 
-    Comments = conn.model("Comments", require("../Models/comments"));
+    Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;
 
 
-    Comments.findOne({guid: commentId})
-    .select("guid date author comment topic_guid -_id")
+    Viewpoints.findOne({guid: viewpointId})
+    .select("index guid orthogonal_camera perspective_camera lines clipping_planes bitmaps snapshot components -_id")
     .exec()
     .then(doc => {
         res.status(200).json(doc);
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};
+
+exports.viewpoint_get_snapshot =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const viewpointId = req.params.viewpointId;
+
+    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useUnifiedTopology:true
+    });
+
+    Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
+    module.exports = conn;
+
+
+    Viewpoints.findOne({guid: viewpointId})
+    .select("snapshot -_id")
+    .exec()
+    .then(doc => {
+        res.status(200).json(doc);
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};
+
+exports.viewpoint_get_bitmap =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const viewpointId = req.params.viewpointId;
+    const bitmapId = req.params.bitmapId;
+
+    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useUnifiedTopology:true
+    });
+
+    Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
+    module.exports = conn;
+
+
+    Viewpoints.findOne({"bitmaps.guid": bitmapId})
+    .select("bitmaps.guid bitmaps.height bitmaps.up bitmaps.normal bitmaps.location bitmaps.bitmap_data bitmaps.bitmap_type -_id")
+    .exec()
+    .then(doc => {
+        res.status(200).json(doc["bitmaps"]);
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};
+
+exports.viewpoint_get_selection =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const viewpointId = req.params.viewpointId;
+
+    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useUnifiedTopology:true
+    });
+
+    Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
+    module.exports = conn;
+
+
+    Viewpoints.findOne({guid: viewpointId})
+    .select("components.selection -_id")
+    .exec()
+    .then(doc => {
+        res.status(200).json(doc["components"]);
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};
+
+exports.viewpoint_get_coloring =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const viewpointId = req.params.viewpointId;
+
+    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useUnifiedTopology:true
+    });
+
+    Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
+    module.exports = conn;
+
+
+    Viewpoints.findOne({guid: viewpointId})
+    .select("components.coloring -_id")
+    .exec()
+    .then(doc => {
+        res.status(200).json(doc["components"]);
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};
+
+exports.viewpoint_get_visibility =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const viewpointId = req.params.viewpointId;
+
+    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useUnifiedTopology:true
+    });
+
+    Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
+    module.exports = conn;
+
+
+    Viewpoints.findOne({guid: viewpointId})
+    .select("components.visibility -_id")
+    .exec()
+    .then(doc => {
+        res.status(200).json(doc["components"]);
     })
     .catch(err => {
         res.status(500).json({

@@ -14,7 +14,7 @@ const componentSchema = new Schema({
     authoring_tool_id: {
         type: String
     }
-});
+}, {_id: false});
 
 const directionSchema = new Schema({
     x: {
@@ -26,7 +26,7 @@ const directionSchema = new Schema({
     z: {
         type: Number
     }
-});
+}, {_id: false});
 
 const pointSchema = new Schema({
     x: {
@@ -38,7 +38,7 @@ const pointSchema = new Schema({
     z: {
         type: Number
     }
-});
+}, {_id: false});
 
 const locationSchema = new Schema({
     x: {
@@ -50,7 +50,7 @@ const locationSchema = new Schema({
     z: {
         type: Number
     }
-});
+}, {_id: false});
 
 const orthogonal_cameraSchema = new Schema({
     camera_view_point: pointSchema,
@@ -59,7 +59,7 @@ const orthogonal_cameraSchema = new Schema({
     view_to_world_scale: {
         type: Number,
     },
-});
+}, {_id: false});
 
 const perspective_cameraSchema = new Schema({
     camera_view_point: pointSchema,
@@ -69,17 +69,17 @@ const perspective_cameraSchema = new Schema({
         type: Number,
     }
 
-});
+}, {_id: false});
 
 const lineSchema = new Schema({
     start_point: pointSchema,
     end_point: pointSchema
-});
+}, {_id: false});
 
 const clipping_planeSchema = new Schema({
     location: locationSchema,
     direction: directionSchema
-});
+}, {_id: false});
 
 const bitmapSchema = new Schema({
     guid: {
@@ -103,7 +103,7 @@ const bitmapSchema = new Schema({
     height: {
         type: Number
     }
-});
+}, {_id: false});
 
 const snapshotSchema = new Schema({
     snapshot_type: {
@@ -114,7 +114,7 @@ const snapshotSchema = new Schema({
         type: String,
         format: "base64"
     }
-});
+}, {_id: false});
 
 const component_listSchema = [ componentSchema ];
 
@@ -131,7 +131,7 @@ const view_setup_hintsSchema = new Schema({
         type: Boolean,
         default: false
     }
-})
+}, {_id: false})
 
 const visibilitySchema = new Schema({
     default_visibility: {
@@ -142,14 +142,14 @@ const visibilitySchema = new Schema({
 
     view_setup_hints: view_setup_hintsSchema
 
-})
+}, {_id: false})
 
 const coloringSchema = new Schema({
     color: {
         type: String,
     },
     components: component_listSchema
-})
+}, {_id: false})
 
 const componentsSchema = new Schema({
     selection: component_listSchema,
@@ -158,7 +158,7 @@ const componentsSchema = new Schema({
 
     visibility: visibilitySchema
 
-})
+}, {_id: false})
 
 
 
