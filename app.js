@@ -4,15 +4,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require('cors')
 mongoose.set("useFindAndModify", false)
+mongoose.set('useCreateIndex', true);
 const app = express();
-
-// TODO: Implement a server address in the nodemon.json.... so you just have to change the server address one time
-
-// Old examples
-
-const productRoutes = require("./api/2.1/Examples/routes/products");
-const orderRoutes = require("./api/2.1/Examples/routes/orders");
-//const userRoutes = require("./api/2.1/Examples/routes/user");
 
 
 // BCF implementation
@@ -25,20 +18,19 @@ const projectsRoutes = require("./api/2.1/Projects/routes/projects");
 
 // Database connection
 
-
-mongoose.connect('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/' + process.env.MONGO_ATLAS_MAIN_SERVER + '?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGO_ATLAS_URL + process.env.MONGO_ATLAS_MAIN_SERVER + '?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology:true
   });
 
 
-// Binary upload?
+// Settings
 
 app.use(morgan("dev"));
-app.use("/uploads", express.static("uploads"))
+//app.use("/uploads", express.static("uploads"))
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json({limit: '5mb'}));
 app.use(bodyParser.json());
-
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -53,15 +45,14 @@ app.use((req, res, next) => {
 });
 
 // Routes which should handle requests
-app.use("/products", productRoutes);
-app.use("/orders", orderRoutes);
-// app.use("/user", userRoutes);
 app.use("/bcf/versions", versionsRoutes);
 app.use("/bcf/2.1/auth", authRoutes);
 app.use("/bcf/2.1/current-user/", userRoutes);
+// The Project Routes serve as distributors to the subroutes of the corresponding project
 app.use("/bcf/2.1/projects/", projectsRoutes);
 
 
+// Error Handlers
 
 app.use((req, res, next) => {
   const error = new Error("Not found");

@@ -1,7 +1,7 @@
 {
-  "name": "rest-shop",
+  "name": "bcfServer",
   "version": "1.0.0",
-  "description": "A Node.js RESTful API Tutorial Project",
+  "description": "A Node.js Bcf Server implementation",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

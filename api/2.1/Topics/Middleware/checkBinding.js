@@ -6,7 +6,7 @@ module.exports = async (req, res, next) =>{
 
     const id = req.params.projectId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology:true
     });

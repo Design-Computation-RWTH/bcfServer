@@ -7,7 +7,7 @@ exports.comments_get =  (req, res, next) => {
     const id = req.params.projectId;
     const topicId = req.params.topicId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -35,7 +35,7 @@ exports.comment_get =  (req, res, next) => {
     const id = req.params.projectId;
     const commentId = req.params.commentId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -63,7 +63,7 @@ exports.comment_create = (req, res, next) => {
     const id = req.params.projectId;
     const topicId = req.params.topicId
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -115,7 +115,7 @@ exports.comment_update = (req, res, next) => {
     const commentId = req.params.commentId
     const timestamp = new Date(Date.now()).toISOString();
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });

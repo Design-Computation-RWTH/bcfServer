@@ -7,7 +7,7 @@ exports.viewpoints_get =  async (req, res, next) => {
     const id = req.params.projectId;
     const topicId = req.params.topicId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -58,7 +58,7 @@ exports.viewpoint_get =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -71,7 +71,13 @@ exports.viewpoint_get =  (req, res, next) => {
     .select("index guid orthogonal_camera perspective_camera lines clipping_planes bitmaps snapshot components -_id")
     .exec()
     .then(doc => {
-        res.status(200).json(doc);
+        res.status(200).json({
+            guid: doc.guid,
+            perspective_camera: doc.perspective_camera,
+            orthogonal_camera: doc.orthogonal_camera,
+            lines: doc.lines,
+            clipping_planes: doc.clipping_planes
+        });
     })
     .catch(err => {
         res.status(500).json({
@@ -86,7 +92,7 @@ exports.viewpoint_get_snapshot =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -115,7 +121,7 @@ exports.viewpoint_get_bitmap =  (req, res, next) => {
     const viewpointId = req.params.viewpointId;
     const bitmapId = req.params.bitmapId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -143,7 +149,7 @@ exports.viewpoint_get_selection =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -171,7 +177,7 @@ exports.viewpoint_get_coloring =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -199,7 +205,7 @@ exports.viewpoint_get_visibility =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -227,7 +233,7 @@ exports.viewpoint_create = (req, res, next) => {
     const id = req.params.projectId;
     const topicId = req.params.topicId
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -266,7 +272,7 @@ exports.viewpoint_create = (req, res, next) => {
     comment
         .save()
         .then(result => {
-        console.log(result);
+        //console.log(result);
         res.status(201).json({
             guid: result.guid,
             date: result.date,
@@ -274,8 +280,8 @@ exports.viewpoint_create = (req, res, next) => {
             perspective_camera: result.perspective_camera,
             lines: result.lines,
             clipping_planes: result.clipping_planes,
-            bitmaps: result.bitmaps,
-            snapshot: result.snapshot,
+            // bitmaps: result.bitmaps,
+            snapshot: {snapshot_type: req.body.snapshot.snapshot_type},
             components: result.components
             });
         })
@@ -287,6 +293,8 @@ exports.viewpoint_create = (req, res, next) => {
     });
 };
 
+// Change Viewpoint Update. It should be able to change the Viewpoints Location, or in general, everything? PUT Viewpoint, not part of the official API
+
 exports.viewpoint_update = (req, res, next) => {
 
     const id = req.params.projectId;
@@ -294,7 +302,7 @@ exports.viewpoint_update = (req, res, next) => {
     const commentId = req.params.commentId
     const timestamp = new Date(Date.now()).toISOString();
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
+    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
