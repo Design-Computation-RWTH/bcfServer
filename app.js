@@ -15,6 +15,7 @@ const authRoutes = require("./api/2.1/Authentication/Routes/auth");
 const userRoutes = require("./api/2.1/User/routes/user");
 const projectsRoutes = require("./api/2.1/Projects/routes/projects");
 
+const checkAuth = require("./api/2.1/Authentication/Middleware/check-auth")
 
 // Database connection
 
@@ -47,9 +48,9 @@ app.use((req, res, next) => {
 // Routes which should handle requests
 app.use("/bcf/versions", versionsRoutes);
 app.use("/bcf/2.1/auth", authRoutes);
-app.use("/bcf/2.1/current-user/", userRoutes);
+app.use("/bcf/2.1/current-user/",checkAuth, userRoutes);
 // The Project Routes serve as distributors to the subroutes of the corresponding project
-app.use("/bcf/2.1/projects/", projectsRoutes);
+app.use("/bcf/2.1/projects/",checkAuth, projectsRoutes);
 
 
 // Error Handlers

@@ -10,8 +10,6 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InNjaHVsekBkYy5yd3RoLWFhY2hlbi5kZSI
 */
 
 exports.current_user = (req, res, next) => {
-    connect,
-    console.log(req.headers)
     User.findOne({id: jwt.decode(req.headers.authorization.split(" ")[1]).id})
     .select("name id")
     .exec()

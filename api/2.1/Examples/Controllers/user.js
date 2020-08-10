@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const User = require("../models/user");
+// const User = require("../models/user");
 const { hash } = require('bcrypt');
 
 
@@ -23,7 +23,8 @@ exports.user_signup = (req, res, next) => {
                 } else { 
                     const user = new User({
                     _id: new mongoose.Types.ObjectId(),
-                    email: req.body.email ,
+                    id: req.body.id ,
+                    name: req.body.name,
                     password: hash
                 });  
                 user
@@ -48,7 +49,7 @@ exports.user_signup = (req, res, next) => {
 };
 
 exports.user_login = (req, res, next) => {
-    User.find({ email: req.body.email})
+    User.find({ id: req.body.id})
     .exec()
     .then(user => {
         if (user.length < 1) {
@@ -63,7 +64,7 @@ exports.user_login = (req, res, next) => {
                 });
             } if (result) {
                 const token = jwt.sign({
-                        email: user[0].email,
+                        id: user[0].id,
                         userId: user[0]._id
                     },
                     process.env.JWT_KEY,

@@ -44,6 +44,8 @@ router.put("/:projectId/topics/:topicId", checkBindings, TopicsController.topic_
 
 router.put("/:projectId/topics/:topicId/comments/:commentId", CommentsController.comment_update);
 
+router.put("/:projectId/topics/:topicId/viewpoints/:viewpointId", ViewpointsController.viewpoint_update);
+
 router.post("/:projectId/topics", checkBindings, TopicsController.topic_create);
 
 router.post("/:projectId/topics/:topicId/comments", CommentsController.comment_create);

@@ -293,13 +293,12 @@ exports.viewpoint_create = (req, res, next) => {
     });
 };
 
-// Change Viewpoint Update. It should be able to change the Viewpoints Location, or in general, everything? PUT Viewpoint, not part of the official API
+//PUT Viewpoint is not part of the official API. Normally a Viewpoint should not be changed after creation
 
 exports.viewpoint_update = (req, res, next) => {
 
     const id = req.params.projectId;
-    const topicId = req.params.topicId;
-    const commentId = req.params.commentId
+    const viewpointId = req.params.viewpointId
     const timestamp = new Date(Date.now()).toISOString();
 
     const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
@@ -307,16 +306,17 @@ exports.viewpoint_update = (req, res, next) => {
         useUnifiedTopology:true
     });
 
-    Comments = conn.model("Comments", require("../Models/comments"));
+    Viewpoint = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;
 
     var data = req.body
 
-    data["modified_author"] = jwt.decode(req.headers.authorization.split(" ")[1]).id
-    data["modified_date"] = timestamp
+    // Setting modified author and date is not part of BCF API and usually not necessary. For our scenario we nevertheless might need to add it
+    // data["modified_author"] = jwt.decode(req.headers.authorization.split(" ")[1]).id
+    // data["modified_date"] = timestamp
     
-    Comments.findOneAndUpdate({guid: commentId}, {$set: req.body}, {new: true })
-        .select("guid date author comment topic_guid modified_author modified_date viewpoint_guid -_id")
+    Viewpoint.findOneAndUpdate({guid: viewpointId}, {$set: req.body}, {new: true })
+        //.select("guid date author comment topic_guid modified_author modified_date viewpoint_guid -_id")
         .exec()
         .then(doc => {
             res.status(200).json(doc);
