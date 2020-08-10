@@ -1,8 +1,8 @@
 {
-  "name": "bcfServer",
+  "name": "bcfserver",
   "version": "1.0.0",
   "description": "A Node.js Bcf Server implementation",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"
@@ -10,7 +10,8 @@
   "keywords": [
     "node",
     "restful",
-    "api"
+    "api",
+    "bcf"
   ],
   "author": "Oliver Schulz",
   "license": "",
