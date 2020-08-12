@@ -1,6 +1,16 @@
 # bcfServer
 This project is a BCF server implementation based on the [BCF API](https://github.com/BuildingSMART/BCF-API) using Node.js and MongoDB. It aims to quickly provide small servers to test the connection to BCF servers with other applications.
 
+# Table of content
+<!-- toc -->
+- [Dependencies/Setup](#Dependencies/Setup)
+- [Authentification](#Authentification)
+  * [Signup User](#Signup-User)
+  * [Login User](#Login-User)
+- [Acknowledgement](#Acknowledgement)
+<!-- tocstop -->
+
+
 # Dependencies/Setup
 All necessary Node.js packages can be taken from the Package.json. Furthermore a MongoDB is needed (local or cloud-based) which is built according to the following scheme:
 

@@ -2,6 +2,22 @@ const Projects = require('../models/projects');
 const mongoose = require('mongoose');
 // const Extensions = require('../models/extensions');
 
+function checkCache(id) {
+    // check if Connection is already defined
+    if(cache==undefined){
+        // if not create a connection to the database and save the connection to the cache variable, so that we only have one connection per database + collection
+        cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+            useNewUrlParser: true,
+            useUnifiedTopology:true
+        });
+        console.log("cached")
+        return cache
+    } else {
+
+        return cache
+    }
+};
+
 
 exports.projects_get_all =  (req, res, next) => {
     Projects.find()
@@ -98,10 +114,7 @@ exports.project_extensions = (req, res) => {
 exports.project_extensions = (req, res) => {
     const id = req.params.projectId;
 
-    const conn = mongoose.createConnection('mongodb+srv://bloodwyn:' + process.env.MONGO_ATLAS_PW + '@bcfcluster-e9rwn.mongodb.net/'+ id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    const conn = checkCache(id)
 
     Extensions = conn.model("Extensions", require("../Models/extensions"));
     module.exports = conn;

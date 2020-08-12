@@ -2,15 +2,36 @@ const mongoose = require('mongoose');
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 
+var cache = undefined;
+
+function checkCache(id) {
+    // check if Connection is already defined
+    if(cache==undefined){
+        // if not create a connection to the database and save the connection to the cache variable, so that we only have one connection per database + collection
+        cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+            useNewUrlParser: true,
+            useUnifiedTopology:true
+        });
+        console.log("cached")
+        return cache
+    } else {
+
+        return cache
+    }
+};
+
 exports.viewpoints_get =  async (req, res, next) => {
 
     const id = req.params.projectId;
     const topicId = req.params.topicId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology:true
+    // });
+
+    const conn = checkCache(id);
+
 
     Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
     Comments = conn.model("Comments", require("../../Comments/Models/comments"))
@@ -24,7 +45,7 @@ exports.viewpoints_get =  async (req, res, next) => {
     .then(doc => {
         for(var key in doc) {
             data = doc[key]["viewpoint_guid"]
-            console.log(data)
+            // console.log(data)
             if (data) {
                 viewpointsArr.push(data)
                 
@@ -37,7 +58,7 @@ exports.viewpoints_get =  async (req, res, next) => {
             error: err
         });
     });
-    console.log(viewpointsArr)
+    // console.log(viewpointsArr)
 
     Viewpoints.find({guid: { $in: viewpointsArr}})
     .select("index guid orthogonal_camera perspective_camera lines clipping_planes bitmaps snapshot components -_id")
@@ -58,10 +79,12 @@ exports.viewpoint_get =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology:true
+    // });
+
+    const conn = checkCache(id);
 
     Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;
@@ -92,10 +115,12 @@ exports.viewpoint_get_snapshot =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology:true
+    // });
+
+    const conn = checkCache(id);
 
     Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;
@@ -112,7 +137,7 @@ exports.viewpoint_get_snapshot =  (req, res, next) => {
             error: err
         });
     });
-
+    mongoose.connection.close()
 };
 
 exports.viewpoint_get_bitmap =  (req, res, next) => {
@@ -121,10 +146,12 @@ exports.viewpoint_get_bitmap =  (req, res, next) => {
     const viewpointId = req.params.viewpointId;
     const bitmapId = req.params.bitmapId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology:true
+    // });
+
+    const conn = checkCache(id);
 
     Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;
@@ -149,10 +176,12 @@ exports.viewpoint_get_selection =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology:true
+    // });
+
+    const conn = checkCache(id);
 
     Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;
@@ -177,10 +206,12 @@ exports.viewpoint_get_coloring =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology:true
+    // });
+
+    const conn = checkCache(id);
 
     Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;
@@ -205,10 +236,12 @@ exports.viewpoint_get_visibility =  (req, res, next) => {
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology:true
+    // });
+
+    const conn = checkCache(id);
 
     Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;
@@ -233,10 +266,12 @@ exports.viewpoint_create = (req, res, next) => {
     const id = req.params.projectId;
     const topicId = req.params.topicId
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology:true
+    // });
+
+    const conn = checkCache(id);
 
     // TODO: Include Timezone
 
@@ -301,10 +336,12 @@ exports.viewpoint_update = (req, res, next) => {
     const viewpointId = req.params.viewpointId
     const timestamp = new Date(Date.now()).toISOString();
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology:true
+    // });
+
+    const conn = checkCache(id);
 
     Viewpoint = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;

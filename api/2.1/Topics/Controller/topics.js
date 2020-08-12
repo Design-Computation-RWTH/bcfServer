@@ -2,14 +2,27 @@ const mongoose = require('mongoose');
 const uuid = require("uuid")
 const jwt = require("jsonwebtoken")
 
+function checkCache(id) {
+    // check if Connection is already defined
+    if(cache==undefined){
+        // if not create a connection to the database and save the connection to the cache variable, so that we only have one connection per database + collection
+        cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+            useNewUrlParser: true,
+            useUnifiedTopology:true
+        });
+        console.log("cached")
+        return cache
+    } else {
+
+        return cache
+    }
+};
+
 exports.topics_get_all =  (req, res, next) => {
 
     const id = req.params.projectId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    const conn = checkCache(id);
 
     Topics = conn.model("Topics", require("../Models/topics"));
     module.exports = conn;
@@ -43,10 +56,7 @@ exports.topic_get =  (req, res, next) => {
     
     const id = req.params.projectId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    const conn = checkCache(id);
 
     Topics = conn.model("Topics", require("../Models/topics"));
     module.exports = conn;
@@ -76,10 +86,7 @@ exports.topic_create = (req, res, next) => {
 
     const id = req.params.projectId;
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    const conn = checkCache(id);
 
     // TODO: Include Timezone
 
@@ -136,10 +143,7 @@ exports.topic_update = (req, res, next) => {
 
     console.log(TopicId)
 
-    const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
-    });
+    const conn = checkCache(id);
 
     Topics = conn.model("Topics", require("../Models/topics"));
     module.exports = conn;
