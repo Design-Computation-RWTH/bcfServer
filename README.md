@@ -12,7 +12,7 @@ This project is a BCF server implementation based on the [BCF API](https://githu
 
 
 # Dependencies/Setup
-All necessary Node.js packages can be taken from the Package.json. Furthermore a MongoDB is needed (local or cloud-based) which is built according to the following scheme:
+All necessary Node.js packages can be taken from the Package.json. Furthermore a MongoDB is needed (local or cloud-based) where the server structure is built according to the following scheme:
 
 
 ```
