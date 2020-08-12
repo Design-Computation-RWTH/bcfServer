@@ -50,7 +50,7 @@ After everything is set browse in your terminal to the directory containing the 
 ```
 
 # Authentification
-For reasons of simplification, the BCF server currently still deviates from the authentication methods proposed in the BCF API. The following methods must be used to create and log in a user:
+For reasons of simplification, the BCF server currently deviates from the authentication methods proposed in the BCF API. The following methods must be used to create and log in a user:
 
 ## Signup User
 ### Resource URL
