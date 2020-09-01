@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
-const uuid = require("uuid")
-const jwt = require("jsonwebtoken")
+const uuid = require("uuid");
+const jwt = require("jsonwebtoken");
+
+var cache = undefined;
 
 function checkCache(id) {
     // check if Connection is already defined
+    console.log
     if(cache==undefined){
         // if not create a connection to the database and save the connection to the cache variable, so that we only have one connection per database + collection
         cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
@@ -55,8 +58,10 @@ exports.topics_get_all =  (req, res, next) => {
 exports.topic_get =  (req, res, next) => {
     
     const id = req.params.projectId;
+    
 
     const conn = checkCache(id);
+
 
     Topics = conn.model("Topics", require("../Models/topics"));
     module.exports = conn;

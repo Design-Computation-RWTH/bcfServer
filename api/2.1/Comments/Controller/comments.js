@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 
+var cache = undefined;
+
 function checkCache(id) {
     // check if Connection is already defined
     if(cache==undefined){
@@ -13,7 +15,7 @@ function checkCache(id) {
         console.log("cached")
         return cache
     } else {
-
+        console.log("Test")
         return cache
     }
 };
@@ -30,7 +32,7 @@ exports.comments_get =  (req, res, next) => {
 
 
     Comments.find({topic_guid: topicId})
-    .select("guid date author comment topic_guid -_id")
+    .select("guid date author comment topic_guid viewpoint_guid -_id")
     .exec()
     .then(doc => {
         res.status(200).json(doc);

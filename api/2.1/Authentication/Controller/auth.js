@@ -67,6 +67,7 @@ exports.auth_signup = (req, res, next) => {
 };
 
 exports.auth_login = (req, res, next) => {
+    //console.log(req.body)
     User.find({ id: req.body.id})
     .exec()
     .then(user => {

@@ -2,6 +2,8 @@ const Projects = require('../models/projects');
 const mongoose = require('mongoose');
 // const Extensions = require('../models/extensions');
 
+var cache = undefined;
+
 function checkCache(id) {
     // check if Connection is already defined
     if(cache==undefined){
@@ -24,7 +26,8 @@ exports.projects_get_all =  (req, res, next) => {
         .select('project_id name')
         .exec()
         .then(docs => {
-            res.status(200).json({
+            res.status(200).json(docs)
+            /*res.status(200).json({
                 Body: docs.map( doc => { 
                     return {
                         _id: doc._id,
@@ -36,7 +39,7 @@ exports.projects_get_all =  (req, res, next) => {
                         }
                     };
                 })
-            });
+            });*/
         })
         .catch(err => {
             res.status(500).json({
