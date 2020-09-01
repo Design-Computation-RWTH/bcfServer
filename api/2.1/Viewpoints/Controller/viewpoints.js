@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
 
 var cache = undefined;
 
@@ -130,7 +131,11 @@ exports.viewpoint_get_snapshot =  (req, res, next) => {
     .select("snapshot -_id")
     .exec()
     .then(doc => {
-        res.status(200).json(doc);
+        var data = doc.snapshot.snapshot_data;
+        var buff = new Buffer.from(data, "base64")
+
+        res.status(200).type("png").send(buff);
+
     })
     .catch(err => {
         res.status(500).json({
