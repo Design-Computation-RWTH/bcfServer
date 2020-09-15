@@ -55,9 +55,41 @@ exports.topics_get_all =  (req, res, next) => {
 
 };
 
+exports.documentreferences_get =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const topicId = req.params.topicId;
+
+    const conn = checkCache(id);
+
+    DocumentReference = conn.model("DocumentRefences", require("../Models/documentreference"));
+    module.exports = conn;
+
+    DocumentReference.find({topic_guid: topicId})
+    .exec()
+    .then(docs => {
+        res.status(200).json(docs.map(doc => {
+            return {
+                guid: doc.guid,
+                url: doc.url,
+                document_guid: doc.document_guid,
+                description: doc.description
+                };
+            })
+        );
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};
+
 exports.topic_get =  (req, res, next) => {
     
     const id = req.params.projectId;
+    const topicId = req.params.topicId
     
 
     const conn = checkCache(id);
@@ -66,7 +98,7 @@ exports.topic_get =  (req, res, next) => {
     Topics = conn.model("Topics", require("../Models/topics"));
     module.exports = conn;
 
-    Topics.findOne({guid: req.params.topicId})
+    Topics.findOne({guid: topicId})
     .exec()
     .then(doc => {
         const response = {
@@ -130,6 +162,44 @@ exports.topic_create = (req, res, next) => {
             labels: result.labels,
             assigned_to: result.assigned_to,
             stage: result.stage
+            });
+        })
+        .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+        });
+    };
+
+exports.documentreferences_post = (req, res, next) => {
+
+    const id = req.params.projectId;
+    const topicId = req.params.topicId;
+
+    const conn = checkCache(id);
+
+
+    DocumentReference = conn.model("Topics", require("../Models/documentreference"));
+    module.exports = conn;
+
+    const documentReference = new DocumentReference({
+        _id: new mongoose.Types.ObjectId(),
+        guid: uuid.v4(),
+        url: req.body.url,
+        document_guid: req.body.document_guid,
+        topic_guid: topicId,
+        description: req.body.description,
+    });
+
+    documentReference
+        .save()
+        .then(result => {
+        res.status(201).json({
+            guid: result.guid,
+            url: result.url,
+            document_guid: result.document_guid,
+            description: result.description
             });
         })
         .catch(err => {
