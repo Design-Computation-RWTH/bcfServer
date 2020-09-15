@@ -62,7 +62,7 @@ exports.documentreferences_get =  (req, res, next) => {
 
     const conn = checkCache(id);
 
-    DocumentReference = conn.model("DocumentRefences", require("../Models/documentreference"));
+    DocumentReference = conn.model("DocumentReferences", require("../Models/documentreference"));
     module.exports = conn;
 
     DocumentReference.find({topic_guid: topicId})
@@ -180,7 +180,7 @@ exports.documentreferences_post = (req, res, next) => {
     const conn = checkCache(id);
 
 
-    DocumentReference = conn.model("Topics", require("../Models/documentreference"));
+    DocumentReference = conn.model("DocumentReferences", require("../Models/documentreference"));
     module.exports = conn;
 
     const documentReference = new DocumentReference({
