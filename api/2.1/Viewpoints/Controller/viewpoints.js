@@ -5,19 +5,29 @@ const fs = require("fs");
 
 var cache = undefined;
 
+function setConnection(id) {
+
+    connection = cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useUnifiedTopology:true
+    });
+    return connection;
+
+};
+
 function checkCache(id) {
     // check if Connection is already defined
     if(cache==undefined){
-        // if not create a connection to the database and save the connection to the cache variable, so that we only have one connection per database + collection
-        cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-            useNewUrlParser: true,
-            useUnifiedTopology:true
-        });
-        console.log("cached")
+        cache = setConnection(id);
         return cache
     } else {
-
-        return cache
+        // check if we are connected to the right server, if not change connection
+        if(cache.name == id){
+            return cache;
+        } else {
+            cache = setConnection(id);
+            return cache;
+        }
     }
 };
 

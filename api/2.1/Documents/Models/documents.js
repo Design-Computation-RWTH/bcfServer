@@ -14,6 +14,10 @@ const documentSchema = new Schema({
     file: {
         type: Buffer,
         required: true
+    },
+    description: {
+        type: String,
+        required: false
     }
 });
 

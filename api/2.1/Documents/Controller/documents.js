@@ -5,28 +5,38 @@ const { countDocuments } = require('../../User/Models/user');
 
 var cache = undefined;
 
+function setConnection(id) {
+
+    connection = cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useUnifiedTopology:true
+    });
+    return connection;
+
+};
+
 function checkCache(id) {
     // check if Connection is already defined
-    console.log
     if(cache==undefined){
-        // if not create a connection to the database and save the connection to the cache variable, so that we only have one connection per database + collection
-        cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-            useNewUrlParser: true,
-            useUnifiedTopology:true
-        });
-        console.log("cached")
+        cache = setConnection(id);
         return cache
     } else {
-
-        return cache
+        // check if we are connected to the right server, if not change connection
+        if(cache.name == id){
+            return cache;
+        } else {
+            cache = setConnection(id);
+            return cache;
+        }
     }
 };
 
 exports.documents_get =  (req, res, next) => {
 
     const id = req.params.projectId;
-
+    //console.log(id)
     const conn = checkCache(id)
+    //console.log(conn)
 
     Documents = conn.model("Documents", require("../Models/documents"));
     module.exports = conn;
@@ -36,6 +46,7 @@ exports.documents_get =  (req, res, next) => {
     .select("-file -_id -__v")
     .exec()
     .then(doc => {
+        //console.log(doc);
         res.status(200).json(doc);
     })
     .catch(err => {
@@ -101,6 +112,7 @@ exports.documents_post =  (req, res, next) => {
             _id: new mongoose.Types.ObjectId(),
             guid: uuid.v4(),
             filename: req.header("Content-Disposition").split("=")[1].slice(1, -1),
+            description: req.header("Content-Description"),
             file: data
         });
     
@@ -111,6 +123,7 @@ exports.documents_post =  (req, res, next) => {
             res.status(201).json({
                 guid: result.guid,
                 filename: result.filename,
+                description: result.description
                 });
             })
             .catch(err => {
