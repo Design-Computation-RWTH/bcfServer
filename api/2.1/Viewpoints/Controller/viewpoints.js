@@ -7,7 +7,7 @@ var cache = undefined;
 
 function setConnection(id) {
 
-    connection = cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    connection = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -48,33 +48,11 @@ exports.viewpoints_get =  async (req, res, next) => {
     Comments = conn.model("Comments", require("../../Comments/Models/comments"))
     module.exports = conn;
 
-    var viewpointsArr = []
-
-    await Comments.find({topic_guid: topicId})
-    .select("viewpoint_guid -_id")
+    Viewpoints.find({topic_guid: topicId})
+    .select("index guid orthogonal_camera perspective_camera lines clipping_planes bitmaps components -_id")
     .exec()
     .then(doc => {
-        for(var key in doc) {
-            data = doc[key]["viewpoint_guid"]
-            // console.log(data)
-            if (data) {
-                viewpointsArr.push(data)
-                
-            }
-            
-        }
-    })
-    .catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
-    // console.log(viewpointsArr)
-
-    Viewpoints.find({guid: { $in: viewpointsArr}})
-    .select("index guid orthogonal_camera perspective_camera lines clipping_planes bitmaps snapshot components -_id")
-    .exec()
-    .then(doc => {
+        //console.log(doc)
         res.status(200).json(doc);
     })
     .catch(err => {
@@ -138,13 +116,14 @@ exports.viewpoint_get_snapshot =  (req, res, next) => {
 
 
     Viewpoints.findOne({guid: viewpointId})
-    .select("snapshot -_id")
+    .select("-_id")
     .exec()
     .then(doc => {
+        
         var data = doc.snapshot.snapshot_data;
-        var buff = new Buffer.from(data, "base64")
-
-        res.status(200).type("png").send(buff);
+        var buff = new Buffer.from(data.toString(),"base64")
+        console.log(buff)
+        res.status(200).send(buff);
 
     })
     .catch(err => {
@@ -152,7 +131,6 @@ exports.viewpoint_get_snapshot =  (req, res, next) => {
             error: err
         });
     });
-    mongoose.connection.close()
 };
 
 exports.viewpoint_get_bitmap =  (req, res, next) => {
@@ -305,8 +283,18 @@ exports.viewpoint_create = (req, res, next) => {
     }
 
     // console.log(bitmapsArr)
+    var baseString = req.body.snapshot.snapshot_data
 
-    const comment = new Viewpoints({
+    var data = new Buffer.from(baseString)
+
+
+    const snapshot = {
+        snapshot_type: req.body.snapshot.snapshot_type,
+        snapshot_data: data
+    }
+
+    res.status(200);
+    const viewpoint = new Viewpoints({
         _id: new mongoose.Types.ObjectId(),
         guid: uuid.v4(),
         date: timestamp,
@@ -315,11 +303,12 @@ exports.viewpoint_create = (req, res, next) => {
         lines: req.body.lines,
         clipping_planes: req.body.clipping_planes,
         bitmaps: bitmapsArr,
-        snapshot: req.body.snapshot,
-        components: req.body.components
+        snapshot: snapshot,
+        components: req.body.components,
+        topic_guid: topicId
     });
 
-    comment
+    viewpoint
         .save()
         .then(result => {
         //console.log(result);

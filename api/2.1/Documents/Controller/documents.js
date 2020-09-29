@@ -7,7 +7,7 @@ var cache = undefined;
 
 function setConnection(id) {
 
-    connection = cache = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
+    connection = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology:true
     });
@@ -107,7 +107,7 @@ exports.documents_post =  (req, res, next) => {
     req.on("end", function() {
 
         req.rawBody = data;
-
+        console.log(data)
         const document = new Document({
             _id: new mongoose.Types.ObjectId(),
             guid: uuid.v4(),

@@ -110,10 +110,14 @@ const snapshotSchema = new Schema({
         type: String,
         enum: ["jpg", "png"]
     },
-    snapshot_data: {
+    /*snapshot_data: {
         type: String,
         format: "base64"
-    }
+    }*/
+    snapshot_data: {
+        type: Buffer,
+        required: true
+    },
 }, {_id: false});
 
 const component_listSchema = [ componentSchema ];
@@ -183,7 +187,12 @@ const viewpointsSchema = new Schema({
 
     snapshot: snapshotSchema,
 
-    components: componentsSchema
+    components: componentsSchema,
+
+    topic_guid: { 
+        type: String,
+        required: true
+         },
 
 });
 
