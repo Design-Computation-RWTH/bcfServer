@@ -45,6 +45,7 @@ exports.topics_get_all =  (req, res, next) => {
         res.status(200).json(docs.map(doc => {
             return {
               guid: doc.guid,
+              creation_date: doc.creation_date,
               creation_author: doc.creation_author,
               topic_type: doc.topic_type,
               topic_status: doc.topic_status,

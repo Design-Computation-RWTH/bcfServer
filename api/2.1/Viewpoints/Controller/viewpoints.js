@@ -293,7 +293,7 @@ exports.viewpoint_create = (req, res, next) => {
         snapshot_data: data
     }
 
-    res.status(200);
+    //res.status(200);
     const viewpoint = new Viewpoints({
         _id: new mongoose.Types.ObjectId(),
         guid: uuid.v4(),
@@ -338,24 +338,12 @@ exports.viewpoint_update = (req, res, next) => {
 
     const id = req.params.projectId;
     const viewpointId = req.params.viewpointId
-    const timestamp = new Date(Date.now()).toISOString();
-
-    // const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {
-    //     useNewUrlParser: true,
-    //     useUnifiedTopology:true
-    // });
 
     const conn = checkCache(id);
 
     Viewpoint = conn.model("Viewpoints", require("../Models/viewpoints"));
     module.exports = conn;
 
-    var data = req.body
-
-    // Setting modified author and date is not part of BCF API and usually not necessary. For our scenario we nevertheless might need to add it
-    // data["modified_author"] = jwt.decode(req.headers.authorization.split(" ")[1]).id
-    // data["modified_date"] = timestamp
-    
     Viewpoint.findOneAndUpdate({guid: viewpointId}, {$set: req.body}, {new: true })
         //.select("guid date author comment topic_guid modified_author modified_date viewpoint_guid -_id")
         .exec()

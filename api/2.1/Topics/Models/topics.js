@@ -12,7 +12,7 @@ const topicsSchema = new Schema({
         required: false
     },
     creation_date: {
-        type: Date,
+        type: String,
         required: true
     },
     topic_type: {

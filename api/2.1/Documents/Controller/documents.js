@@ -106,33 +106,52 @@ exports.documents_post =  (req, res, next) => {
     });
     req.on("end", function() {
 
+        const filename = req.header("Content-Disposition").split("=")[1].slice(1, -1);
+        var foundDocument = false
         req.rawBody = data;
-        console.log(data)
-        const document = new Document({
-            _id: new mongoose.Types.ObjectId(),
-            guid: uuid.v4(),
-            filename: req.header("Content-Disposition").split("=")[1].slice(1, -1),
-            description: req.header("Content-Description"),
-            file: data
-        });
-    
-        document
-            .save()
-            .then(result => {
-            //console.log(result);
-            res.status(201).json({
-                guid: result.guid,
-                filename: result.filename,
-                description: result.description
+
+        Document.findOneAndUpdate({filename: filename}, {file: data}, {new: true })
+        .exec()
+        .then(result => {
+            
+            if(result != null){
+                foundDocument = true
+                res.status(200).json(result)
+            } else {
+                const document = new Document({
+                    _id: new mongoose.Types.ObjectId(),
+                    guid: uuid.v4(),
+                    filename: req.header("Content-Disposition").split("=")[1].slice(1, -1),
+                    description: req.header("Content-Description"),
+                    file: data
                 });
-            })
-            .catch(err => {
-            //console.log(err);
+            
+                document
+                    .save()
+                    .then(result => {
+                    //console.log(result);
+                    res.status(201).json({
+                        guid: result.guid,
+                        filename: result.filename,
+                        description: result.description
+                        });
+                    })
+                    .catch(err => {
+                    //console.log(err);
+                    res.status(500).json({
+                        error: err
+                    });
+                });
+            };
+        })
+        .catch(err => {
+            console.log(err);
             res.status(500).json({
                 error: err
             });
         });
-        // console.log(req.rawBody)
+
+
     });
 };
 
