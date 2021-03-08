@@ -357,3 +357,57 @@ exports.viewpoint_update = (req, res, next) => {
             });
         });
 };
+
+// BCF Extension
+
+exports.viewpoints_get_all =  async (req, res, next) => {
+
+    const id = req.params.projectId;
+    const conn = checkCache(id);
+    Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
+    module.exports = conn;
+
+    Viewpoints.find({})
+    .select("index guid topic_guid orthogonal_camera perspective_camera lines clipping_planes bitmaps components -_id")
+    .exec()
+    .then(doc => {
+        //console.log(doc)
+        res.status(200).json(doc);
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};
+
+exports.viewpoint_get_all_snapshots =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const viewpointId = req.params.viewpointId;
+
+    const conn = checkCache(id);
+
+    Viewpoints = conn.model("Viewpoints", require("../Models/viewpoints"));
+    module.exports = conn;
+
+
+    Viewpoints.findOne({guid: viewpointId})
+    .select("-_id")
+    .exec()
+    .then(doc => {
+        
+        var data = doc.snapshot.snapshot_data;
+        var buff = new Buffer.from(data.toString(),"base64")
+        console.log(buff)
+        res.status(200).send(buff);
+
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+

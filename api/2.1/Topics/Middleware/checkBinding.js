@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 
 module.exports = async (req, res, next) =>{
 
+    console.log("Check Bindings")
+
     const id = req.params.projectId;
 
     const conn = mongoose.createConnection(process.env.MONGO_ATLAS_URL + id + '?retryWrites=true&w=majority', {

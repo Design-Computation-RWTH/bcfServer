@@ -157,3 +157,27 @@ exports.comment_update = (req, res, next) => {
             });
         });
 };
+
+// BCF Extension
+
+exports.comments_get_all =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const conn = checkCache(id);
+    Comments = conn.model("Comments", require("../Models/comments"));
+    module.exports = conn;
+
+
+    Comments.find({})
+    .select("guid date author comment topic_guid viewpoint_guid -_id")
+    .exec()
+    .then(doc => {
+        res.status(200).json(doc);
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};

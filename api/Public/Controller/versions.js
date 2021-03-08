@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 exports.get_versions = (req, res, next) => {
         const response = {
+            "customInt": 10,
             "versions": [{
                 "version_id": "2.1",
                 "detailed_version": "https://github.com/BuildingSMART/BCF-API"

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
+const parser = require("odata-parser");
 
 var cache = undefined;
 
@@ -39,6 +40,12 @@ exports.topics_get_all =  (req, res, next) => {
     Topics = conn.model("Topics", require("../Models/topics"));
     module.exports = conn;
 
+    console.log(req.query)
+
+    var myQuery = req.query.$filter
+    var parsing = parser.parse("$filter=" + myQuery)
+    console.log(JSON.stringify(parsing))
+
     Topics.find()
     .exec()
     .then(docs => {
@@ -75,6 +82,8 @@ exports.documentreferences_get =  (req, res, next) => {
     DocumentReference = conn.model("DocumentReferences", require("../Models/documentreference"));
     module.exports = conn;
 
+
+    
     DocumentReference.find({topic_guid: topicId})
     .exec()
     .then(docs => {
@@ -131,10 +140,13 @@ exports.topic_get =  (req, res, next) => {
 
 exports.topic_create = (req, res, next) => {
 
+    console.log("Test")
+
     const id = req.params.projectId;
 
     const conn = checkCache(id);
 
+    console.log("Test")
     // TODO: Include Timezone
 
     const timestamp = new Date(Date.now()).toISOString();
@@ -263,4 +275,73 @@ exports.topic_update = (req, res, next) => {
                 error: err
             });
         });
+};
+
+// BCF Extension
+
+exports.topics_get_all_with_documentId =  (req, res, next) => {
+
+    const id = req.params.projectId;
+
+    const conn = checkCache(id);
+
+    Topics = conn.model("Topics", require("../Models/topics"));
+    module.exports = conn;
+
+    Topics.find()
+    .exec()
+    .then(docs => {
+        res.status(200).json(docs.map(doc => {
+            return {
+              guid: doc.guid,
+              creation_date: doc.creation_date,
+              creation_author: doc.creation_author,
+              topic_type: doc.topic_type,
+              topic_status: doc.topic_status,
+              title: doc.title,
+              priority: doc.priority,
+              labels: doc.labels,
+              assigned_to: doc.assigned_to,
+                }
+            })
+        )
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};
+
+exports.documentreferences_get_all =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const topicId = req.params.topicId;
+
+    const conn = checkCache(id);
+
+    DocumentReference = conn.model("DocumentReferences", require("../Models/documentreference"));
+    module.exports = conn;
+
+    DocumentReference.find({})
+    .exec()
+    .then(docs => {
+        res.status(200).json(docs.map(doc => {
+            return {
+                guid: doc.guid,
+                url: doc.url,
+                document_guid: doc.document_guid,
+                description: doc.description,
+                topic_guid: doc.topic_guid
+                };
+            })
+        );
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
 };

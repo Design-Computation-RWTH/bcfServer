@@ -52,7 +52,7 @@ router.put("/:projectId/topics/:topicId", checkBindings, TopicsController.topic_
 
 router.put("/:projectId/topics/:topicId/comments/:commentId", CommentsController.comment_update);
 
-router.put("/:projectId/topics/:topicId/viewpoints/:viewpointId", ViewpointsController.viewpoint_update);
+
 
 router.post("/:projectId/topics", checkBindings, TopicsController.topic_create);
 
@@ -63,6 +63,17 @@ router.post("/:projectId/topics/:topicId/comments", CommentsController.comment_c
 router.post("/:projectId/topics/:topicId/viewpoints", ViewpointsController.viewpoint_create);
 
 router.post("/:projectId/documents", DocumentsController.documents_post);
+
+// BCF Extensions
+
+router.get("/:projectId/viewpoints", ViewpointsController.viewpoints_get_all);
+
+router.get("/:projectId/comments", CommentsController.comments_get_all);
+
+router.get("/:projectId/document_references", TopicsController.documentreferences_get_all);
+
+router.put("/:projectId/viewpoints/:viewpointId", ViewpointsController.viewpoint_update);
+
 
 
 

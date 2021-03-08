@@ -106,7 +106,13 @@ exports.documents_post =  (req, res, next) => {
     });
     req.on("end", function() {
 
-        const filename = req.header("Content-Disposition").split("=")[1].slice(1, -1);
+        
+        const filename = req.header("Content-Disposition").split("=")[1].split('"')[1];
+        const description = req.header("Content-Disposition").split("=")[2].split('"')[1]
+
+        console.log(filename)
+        console.log(description)
+
         var foundDocument = false
         req.rawBody = data;
 
@@ -115,14 +121,13 @@ exports.documents_post =  (req, res, next) => {
         .then(result => {
             
             if(result != null){
-                foundDocument = true
                 res.status(200).json(result)
             } else {
                 const document = new Document({
                     _id: new mongoose.Types.ObjectId(),
                     guid: uuid.v4(),
-                    filename: req.header("Content-Disposition").split("=")[1].slice(1, -1),
-                    description: req.header("Content-Description"),
+                    filename: filename,
+                    description: description,
                     file: data
                 });
             
