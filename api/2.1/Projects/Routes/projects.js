@@ -46,11 +46,15 @@ router.get("/:projectId/documents", DocumentsController.documents_get);
 
 router.get("/:projectId/documents/:documentId", DocumentsController.document_get);
 
+router.get("/:projectId/documents/:documentId/spatial_representation", DocumentsController.spatial_representation_get);
+
 router.put("/:projectId", ProjectController.project_update);
 
 router.put("/:projectId/topics/:topicId", checkBindings, TopicsController.topic_update);
 
 router.put("/:projectId/topics/:topicId/comments/:commentId", CommentsController.comment_update);
+
+router.put("/:projectId/documents/:documentId/spatial_representation", DocumentsController.spatial_representation_update);
 
 
 

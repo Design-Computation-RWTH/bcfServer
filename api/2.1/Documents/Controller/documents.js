@@ -160,4 +160,93 @@ exports.documents_post =  (req, res, next) => {
     });
 };
 
+exports.spatial_representation_get =  (req, res, next) => {
+
+    const id = req.params.projectId;
+    const documentId = req.params.documentId;
+
+    const conn = checkCache(id);
+
+    SpatialRepresentation = conn.model("SpatialRepresentations", require("../Models/spatial_representation"));
+    module.exports = conn;
+  
+    SpatialRepresentation.findOne({documentId: documentId})
+    .select("-_id")
+    .exec()
+    .then(doc => {
+        res.status(200).json(doc);;
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+};
+
+exports.spatial_representation_update = (req, res, next) => {
+
+    const id = req.params.projectId;
+    const documentId = req.params.documentId;
+
+    const conn = checkCache(id);
+
+    SpatialRepresentation = conn.model("SpatialRepresentation", require("../Models/spatial_representation"));
+    module.exports = conn;
+
+    const representation = {
+        documentId: documentId,
+        alignment: req.body.alignment,
+        location: req.body.location,
+        rotation: req.body.rotation,
+        scale: req.body.scale
+    }
+
+    console.log(req.body.location)
+
+    // TODO: update document 
+
+    SpatialRepresentation.findOneAndUpdate({documentId: documentId}, {$set: representation}, {new: true })
+    .exec()
+    .then(result => { 
+        if(result != null){
+            console.log("if")
+            res.status(200).json(result)
+        } else {
+            console.log("else")
+            const spatialRepresentation = new SpatialRepresentation({
+                _id: new mongoose.Types.ObjectId(),
+                documentId: documentId,
+                alignment: representation.alignment,
+                location: representation.location, 
+                rotation: representation.rotation,
+                scale: representation.scale
+            });
+            console.log(spatialRepresentation)
+            spatialRepresentation
+            .save()
+            .then(result => {
+                res.status(200).json({
+                    documentId: result.documentId,
+                    alignment: result.alignment,
+                    location: result.location, 
+                    rotation: result.rotation,
+                    scale: result.scale
+                });
+            })
+            .catch(err => {
+            //console.log(err);
+            res.status(500).json({
+                error: err
+                });
+            });
+        };
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+            });
+        });
+};
 
