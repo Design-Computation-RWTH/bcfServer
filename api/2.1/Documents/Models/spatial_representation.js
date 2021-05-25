@@ -1,36 +1,37 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const vectorSchema = new Schema({
+const vectorSchema = new Schema(
+  {
     x: {
-        type: Number
+      type: Number,
     },
     y: {
-        type: Number
+      type: Number,
     },
     z: {
-        type: Number
-    }
-}, {_id: false});
-
+      type: Number,
+    },
+  },
+  { _id: false }
+);
 
 const spatialRepresentationSchema = new Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    documentId: {
-        type: String,
-        required: true
-    },
-    alignment: { 
-        type: String,
-        required: false,
-         },
+  _id: mongoose.Schema.Types.ObjectId,
+  documentId: {
+    type: String,
+    required: true,
+  },
+  alignment: {
+    type: String,
+    required: false,
+  },
 
-    location: vectorSchema,
+  location: vectorSchema,
 
-    rotation: vectorSchema,
+  rotation: vectorSchema,
 
-    scale: vectorSchema
-    
+  scale: vectorSchema,
 });
 
 module.exports = spatialRepresentationSchema;

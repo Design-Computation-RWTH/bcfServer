@@ -1,98 +1,121 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Have a look at: https://zellwk.com/blog/mongoose-subdocuments/ @OlliSchu
 
-
-const componentSchema = new Schema({
+const componentSchema = new Schema(
+  {
     ifc_guid: {
-        type: String
+      type: String,
     },
     originating_system: {
-        type: String
+      type: String,
     },
     authoring_tool_id: {
-        type: String
-    }
-}, {_id: false});
+      type: String,
+    },
+  },
+  { _id: false }
+);
 
-const directionSchema = new Schema({
+const directionSchema = new Schema(
+  {
     x: {
-        type: Number
+      type: Number,
     },
     y: {
-        type: Number
+      type: Number,
     },
     z: {
-        type: Number
-    }
-}, {_id: false});
+      type: Number,
+    },
+  },
+  { _id: false }
+);
 
-const pointSchema = new Schema({
+const pointSchema = new Schema(
+  {
     x: {
-        type: Number
+      type: Number,
     },
     y: {
-        type: Number
+      type: Number,
     },
     z: {
-        type: Number
-    }
-}, {_id: false});
+      type: Number,
+    },
+  },
+  { _id: false }
+);
 
-const locationSchema = new Schema({
+const locationSchema = new Schema(
+  {
     x: {
-        type: Number
+      type: Number,
     },
     y: {
-        type: Number
+      type: Number,
     },
     z: {
-        type: Number
-    }
-}, {_id: false});
+      type: Number,
+    },
+  },
+  { _id: false }
+);
 
-const orthogonal_cameraSchema = new Schema({
+const orthogonal_cameraSchema = new Schema(
+  {
     camera_view_point: pointSchema,
     camera_direction: directionSchema,
     camera_up_vector: directionSchema,
     view_to_world_scale: {
-        type: Number,
+      type: Number,
     },
-}, {_id: false});
+  },
+  { _id: false }
+);
 
-const perspective_cameraSchema = new Schema({
+const perspective_cameraSchema = new Schema(
+  {
     camera_view_point: pointSchema,
     camera_direction: directionSchema,
     camera_up_vector: directionSchema,
     field_of_view: {
-        type: Number,
-    }
+      type: Number,
+    },
+  },
+  { _id: false }
+);
 
-}, {_id: false});
-
-const lineSchema = new Schema({
+const lineSchema = new Schema(
+  {
     start_point: pointSchema,
-    end_point: pointSchema
-}, {_id: false});
+    end_point: pointSchema,
+  },
+  { _id: false }
+);
 
-const clipping_planeSchema = new Schema({
+const clipping_planeSchema = new Schema(
+  {
     location: locationSchema,
-    direction: directionSchema
-}, {_id: false});
+    direction: directionSchema,
+  },
+  { _id: false }
+);
 
-const bitmapSchema = new Schema({
+const bitmapSchema = new Schema(
+  {
     guid: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     bitmap_type: {
-        type: String,
-        enum: ["jpg", "png"]
+      type: String,
+      enum: ["jpg", "png"],
     },
     bitmap_data: {
-        type: String,
-        format: "base64"
+      type: String,
+      format: "base64",
     },
     location: locationSchema,
 
@@ -101,99 +124,111 @@ const bitmapSchema = new Schema({
     up: directionSchema,
 
     height: {
-        type: Number
-    }
-}, {_id: false});
+      type: Number,
+    },
+  },
+  { _id: false }
+);
 
-const snapshotSchema = new Schema({
+const snapshotSchema = new Schema(
+  {
     snapshot_type: {
-        type: String,
-        enum: ["jpg", "png"]
+      type: String,
+      enum: ["jpg", "png"],
     },
     /*snapshot_data: {
         type: String,
         format: "base64"
     }*/
     snapshot_data: {
-        type: Buffer,
-        required: true
+      type: Buffer,
+      required: true,
     },
-}, {_id: false});
+  },
+  { _id: false }
+);
 
-const component_listSchema = [ componentSchema ];
+const component_listSchema = [componentSchema];
 
-const view_setup_hintsSchema = new Schema({
+const view_setup_hintsSchema = new Schema(
+  {
     spaces_visible: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     space_boundaries_visible: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     openings_visible: {
-        type: Boolean,
-        default: false
-    }
-}, {_id: false})
+      type: Boolean,
+      default: false,
+    },
+  },
+  { _id: false }
+);
 
-const visibilitySchema = new Schema({
+const visibilitySchema = new Schema(
+  {
     default_visibility: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     exceptions: component_listSchema,
 
-    view_setup_hints: view_setup_hintsSchema
+    view_setup_hints: view_setup_hintsSchema,
+  },
+  { _id: false }
+);
 
-}, {_id: false})
-
-const coloringSchema = new Schema({
+const coloringSchema = new Schema(
+  {
     color: {
-        type: String,
+      type: String,
     },
-    components: component_listSchema
-}, {_id: false})
+    components: component_listSchema,
+  },
+  { _id: false }
+);
 
-const componentsSchema = new Schema({
+const componentsSchema = new Schema(
+  {
     selection: component_listSchema,
 
-    coloring: [ coloringSchema ],
+    coloring: [coloringSchema],
 
-    visibility: visibilitySchema
-
-}, {_id: false})
-
-
+    visibility: visibilitySchema,
+  },
+  { _id: false }
+);
 
 const viewpointsSchema = new Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    index: {
-        type: Number
-    },
-    guid: { 
-        type: String,
-        required: true
-         },
-    orthogonal_camera: orthogonal_cameraSchema,
+  _id: mongoose.Schema.Types.ObjectId,
+  index: {
+    type: Number,
+  },
+  guid: {
+    type: String,
+    required: true,
+  },
+  orthogonal_camera: orthogonal_cameraSchema,
 
-    perspective_camera: perspective_cameraSchema,
+  perspective_camera: perspective_cameraSchema,
 
-    lines: [ lineSchema ],
+  lines: [lineSchema],
 
-    clipping_planes: [clipping_planeSchema],
+  clipping_planes: [clipping_planeSchema],
 
-    bitmaps: [ bitmapSchema ],
+  bitmaps: [bitmapSchema],
 
-    snapshot: snapshotSchema,
+  snapshot: snapshotSchema,
 
-    components: componentsSchema,
+  components: componentsSchema,
 
-    topic_guid: { 
-        type: String,
-        required: true
-         },
-
+  topic_guid: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = viewpointsSchema;

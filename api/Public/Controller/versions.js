@@ -3,12 +3,14 @@ const mongoose = require("mongoose");
 //TODO: Get Versions dynamically
 
 exports.get_versions = (req, res, next) => {
-        const response = {
-            "customInt": 10,
-            "versions": [{
-                "version_id": "2.1",
-                "detailed_version": "https://github.com/BuildingSMART/BCF-API"
-            }]         
-        };
-        res.status(200).json(response);
-      };
+  const response = {
+    customInt: 10,
+    versions: [
+      {
+        version_id: "2.1",
+        detailed_version: "https://github.com/BuildingSMART/BCF-API",
+      },
+    ],
+  };
+  res.status(200).json(response);
+};

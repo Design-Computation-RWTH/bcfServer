@@ -1,0 +1,21 @@
+version: "3"
+services:
+  node:
+    container_name: bcfServer
+    restart: always
+    build: .
+    volumes:
+      - ./volumes
+    ports:
+      - "3000:3000"
+    links:
+      - mongo
+  mongo:
+    image: mongo
+    volumes:
+      - mongodb:/data/db
+    ports:
+      - "27017:27017"
+    command: mongod
+volumes:
+  mongodb:
