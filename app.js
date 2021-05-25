@@ -34,9 +34,9 @@ mongoose.connect(
   }
 );
 
-const init = require("./api/2.1/Authentication/Controller/auth");
+//const init = require("./api/2.1/Authentication/Controller/auth");
 
-init.auth_init_signup();
+//init.auth_init_signup();
 
 // Settings
 
