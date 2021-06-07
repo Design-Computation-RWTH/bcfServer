@@ -148,6 +148,16 @@ const snapshotSchema = new Schema(
   { _id: false }
 );
 
+const geometrySchema = new Schema(
+  {
+    origin: locationSchema,
+    radius: {
+      type: Number,
+    },
+  },
+  { _id: false }
+);
+
 const component_listSchema = [componentSchema];
 
 const view_setup_hintsSchema = new Schema(
@@ -224,6 +234,13 @@ const viewpointsSchema = new Schema({
   snapshot: snapshotSchema,
 
   components: componentsSchema,
+
+  originating_document: {
+    type: String,
+    required: false,
+  },
+
+  geometry: geometrySchema,
 
   topic_guid: {
     type: String,
