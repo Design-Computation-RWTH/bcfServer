@@ -289,6 +289,8 @@ exports.viewpoint_create = (req, res, next) => {
     snapshot: snapshot,
     components: req.body.components,
     topic_guid: topicId,
+    originating_document: req.body.originating_document,
+    geometry: reg.body.geometry,
   });
 
   viewpoint
