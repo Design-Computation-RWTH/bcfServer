@@ -290,7 +290,7 @@ exports.viewpoint_create = (req, res, next) => {
     components: req.body.components,
     topic_guid: topicId,
     originating_document: req.body.originating_document,
-    geometry: reg.body.geometry,
+    geometry: req.body.geometry,
   });
 
   viewpoint
