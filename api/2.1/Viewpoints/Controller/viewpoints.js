@@ -356,7 +356,7 @@ exports.viewpoints_get_all = async (req, res, next) => {
 
   Viewpoints.find({})
     .select(
-      "index guid topic_guid orthogonal_camera perspective_camera lines clipping_planes bitmaps components -_id"
+      "index guid topic_guid orthogonal_camera perspective_camera lines clipping_planes bitmaps components -_id originating_document geometry"
     )
     .exec()
     .then((doc) => {
