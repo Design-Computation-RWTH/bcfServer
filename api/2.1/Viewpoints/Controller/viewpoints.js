@@ -275,7 +275,7 @@ exports.viewpoint_create = (req, res, next) => {
     snapshot_type: req.body.snapshot.snapshot_type,
     snapshot_data: data,
   };
-
+  console.log(req.body.originating_document);
   //res.status(200);
   const viewpoint = new Viewpoints({
     _id: new mongoose.Types.ObjectId(),
