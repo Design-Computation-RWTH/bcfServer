@@ -11,6 +11,10 @@ const projectSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  user: {
+    type: Array,
+    required: false,
+  },
 });
 
 module.exports = mongoose.model("Projects", projectSchema);

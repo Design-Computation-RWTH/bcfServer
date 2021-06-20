@@ -33,7 +33,9 @@ function checkCache(id) {
 }
 
 exports.projects_get_all = (req, res, next) => {
-  Projects.find()
+  Projects.find({
+    user: jwt.decode(req.headers.authorization.split(" ")[1]).id,
+  })
     .select("project_id name")
     .exec()
     .then((docs) => {
