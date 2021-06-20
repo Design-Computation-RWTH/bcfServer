@@ -11,19 +11,18 @@ module.exports = (req, res, next) => {
       .exec()
       .then((user) => {
         if (user.role == "admin") {
-          console.log("Accepted");
           next();
         } else {
           return res.status(401).json({
             message:
-              "Authentication failed. You do not have the rights to create a user.",
+              "Authentication failed. You do not have the rights for this operation.",
           });
         }
       });
   } catch (error) {
     return res.status(401).json({
       message:
-        "Authentication failed. You do not have the rights to create a user.",
+        "Authentication failed. You do not have the rights for this operation.",
     });
   }
 };
