@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 
 exports.get_versions = (req, res, next) => {
   const response = {
-    customInt: 10,
     versions: [
       {
         version_id: "2.1",

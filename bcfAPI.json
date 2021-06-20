@@ -2,12 +2,21 @@
   "openapi": "3.0.2",
   "info": {
     "title": "BCF OpenAPI",
-    "description": "An openAPI for the BIM Collaboration format (BCF), based on the [BCF-API](https://github.com/buildingSMART/BCF-API/tree/release_2_1)",
-    "version": "2.1"
+    "description": "An openAPI for the BIM Collaboration format (BCF), based on the [BCF-API](https://github.com/buildingSMART/BCF-API/tree/release_2_1) with extended functionality",
+    "version": "1.0.0"
   },
   "servers": [
     {
+      "url": "https://virtserver.swaggerhub.com/OlliSchu/CAIAbcfServer/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
       "url": "/"
+    }
+  ],
+  "security": [
+    {
+      "basicAuth": []
     }
   ],
   "paths": {
@@ -1086,6 +1095,280 @@
         }
       }
     },
+    "/bcf/{version}/projects/{project_id}/viewpoints": {
+      "get": {
+        "tags": [
+          "Viewpoints Extension"
+        ],
+        "summary": "Retrieve a collection of viewpoints related to a project.",
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "default": "2.1"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/viewpoint_GET"
+                  }
+                },
+                "example": [
+                  {
+                    "guid": "b24a82e9-f67b-43b8-bda0-4946abf39624",
+                    "topic_guid": "082c6a01-a379-45e6-9ae9-d9eaae41f7c4",
+                    "perspective_camera": {
+                      "camera_view_point": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                      },
+                      "camera_direction": {
+                        "x": 1,
+                        "y": 1,
+                        "z": 2
+                      },
+                      "camera_up_vector": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 1
+                      },
+                      "field_of_view": 90
+                    },
+                    "lines": [
+                      {
+                        "start_point": {
+                          "x": 2,
+                          "y": 1,
+                          "z": 1
+                        },
+                        "end_point": {
+                          "x": 0,
+                          "y": 1,
+                          "z": 0.7
+                        }
+                      }
+                    ],
+                    "clipping_planes": [
+                      {
+                        "location": {
+                          "x": 0.7,
+                          "y": 0.3,
+                          "z": -0.2
+                        },
+                        "direction": {
+                          "x": 1,
+                          "y": 0.4,
+                          "z": 0.1
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "guid": "a11a82e7-e66c-34b4-ada1-5846abf39133",
+                    "topic_guid": "b102f41c-b1b3-4216-94c2-77c6468ddf88",
+                    "perspective_camera": {
+                      "camera_view_point": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                      },
+                      "camera_direction": {
+                        "x": 1,
+                        "y": 1,
+                        "z": 2
+                      },
+                      "camera_up_vector": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 1
+                      },
+                      "field_of_view": 90
+                    },
+                    "lines": [
+                      {
+                        "start_point": {
+                          "x": 1,
+                          "y": 1,
+                          "z": 1
+                        },
+                        "end_point": {
+                          "x": 0,
+                          "y": 0,
+                          "z": 0
+                        }
+                      }
+                    ],
+                    "clipping_planes": [
+                      {
+                        "location": {
+                          "x": 0.5,
+                          "y": 0.5,
+                          "z": 0.5
+                        },
+                        "direction": {
+                          "x": 1,
+                          "y": 0,
+                          "z": 0
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bcf/{version}/projects/{project_id}/comments": {
+      "get": {
+        "tags": [
+          "Comments Extension"
+        ],
+        "summary": "Retrieve a collection of comments related to a project.",
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "default": "2.1"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/comment_GET"
+                  }
+                },
+                "example": [
+                  {
+                    "guid": "C4215F4D-AC45-A43A-D615-AA456BEF832B",
+                    "viewpoint_guid": "fae1d40a-10b9-4bc3-831c-1aa8231bd809",
+                    "date": "2016-08-01T12:34:22.409Z",
+                    "author": "max.muster@example.com",
+                    "comment": "Clash found",
+                    "topic_guid": "B345F4F2-3A04-B43B-A713-5E456BEF8228",
+                    "authorization": {
+                      "comment_actions": [
+                        "update"
+                      ]
+                    }
+                  },
+                  {
+                    "guid": "A333FCA8-1A31-CAAC-A321-BB33ABC8414",
+                    "date": "2016-08-01T14:24:11.316Z",
+                    "author": "bob.heater@example.com",
+                    "comment": "will rework the heating model",
+                    "topic_guid": "B345F4F2-3A04-B43B-A713-5E456BEF8228"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bcf/{version}/projects/{project_id}/document_references": {
+      "get": {
+        "tags": [
+          "Document References Extension"
+        ],
+        "summary": "Retrieve a collection of document references related to a project.",
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "default": "2.1"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/document_reference_GET"
+                  }
+                },
+                "example": [
+                  {
+                    "guid": "212ab37a-6122-448e-86fc-86503183b520",
+                    "url": "http://example.com/files/LegalRequirements.pdf",
+                    "description": "The legal requirements for buildings."
+                  },
+                  {
+                    "guid": "6cbfe31d-95c3-4f4d-92a6-420c23698721",
+                    "document_guid": "472ab37a-6122-448e-86fc-86503183b520",
+                    "description": "The building owners global design parameters for buildings."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/bcf/{version}/projects/{project_id}/topics/{topic_id}/comments": {
       "get": {
         "tags": [
@@ -1801,6 +2084,152 @@
         "responses": {
           "200": {
             "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/viewpoint_GET"
+                },
+                "example": {
+                  "guid": "a11a82e7-e66c-34b4-ada1-5846abf39133",
+                  "index": 10,
+                  "perspective_camera": {
+                    "camera_view_point": {
+                      "x": 0,
+                      "y": 0,
+                      "z": 0
+                    },
+                    "camera_direction": {
+                      "x": 1,
+                      "y": 1,
+                      "z": 2
+                    },
+                    "camera_up_vector": {
+                      "x": 0,
+                      "y": 0,
+                      "z": 1
+                    },
+                    "field_of_view": 90
+                  },
+                  "lines": [
+                    {
+                      "start_point": {
+                        "x": 1,
+                        "y": 1,
+                        "z": 1
+                      },
+                      "end_point": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                      }
+                    }
+                  ],
+                  "clipping_planes": [
+                    {
+                      "location": {
+                        "x": 0.5,
+                        "y": 0.5,
+                        "z": 0.5
+                      },
+                      "direction": {
+                        "x": 1,
+                        "y": 0,
+                        "z": 0
+                      }
+                    }
+                  ],
+                  "bitmaps": [
+                    {
+                      "guid": "20c1cb56-315f-4a0a-922d-ed7a4a8edf55",
+                      "bitmap_type": "jpg",
+                      "location": {
+                        "x": 10,
+                        "y": -10,
+                        "z": 7
+                      },
+                      "normal": {
+                        "x": -1,
+                        "y": 1.25,
+                        "z": 0
+                      },
+                      "up": {
+                        "x": -5.4,
+                        "y": -4.3,
+                        "z": 1
+                      },
+                      "height": 1666
+                    }
+                  ],
+                  "snapshot": {
+                    "snapshot_type": "png"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Viewpoints"
+        ],
+        "summary": "Updates a Viewpoint\n",
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "default": "2.1"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "topic_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "viewpoint_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/viewpoint_PUT"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
             "content": {
               "application/json": {
                 "schema": {
@@ -2803,6 +3232,158 @@
         }
       }
     },
+    "/bcf/{version}/projects/{project_id}/documents/{document_id}/spatial_representation": {
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Retrieves spatial representation for a document\n",
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "default": "2.1"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/spatial_representation_GET"
+                },
+                "example": {
+                  "documentId": "d5e29473-f414-49df-a255-960d16c8d096",
+                  "alignment": "center",
+                  "location": {
+                    "X": 2500,
+                    "Y": -980,
+                    "Z": -0.04
+                  },
+                  "rotation": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "scale": {
+                    "X": 0.199637,
+                    "Y": 0.199637,
+                    "Z": 0.199637
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Updates a spatial representation.",
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "default": "2.1"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/spatial_representation_PUT"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/spatial_representation_PUT"
+                },
+                "example": {
+                  "documentId": "d5e29473-f414-49df-a255-960d16c8d096",
+                  "alignment": "center",
+                  "location": {
+                    "X": 2500,
+                    "Y": -980,
+                    "Z": -0.04
+                  },
+                  "rotation": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "scale": {
+                    "X": 0.199637,
+                    "Y": 0.199637,
+                    "Z": 0.199637
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bcf/{version}/projects/{project_id}/topics/events": {
       "get": {
         "tags": [
@@ -3640,6 +4221,60 @@
           }
         }
       },
+      "spatial_representation_GET": {
+        "required": [
+          "documentId",
+          "location",
+          "rotation",
+          "scale"
+        ],
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string"
+          },
+          "alignment": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "$ref": "#/components/schemas/point"
+          },
+          "rotation": {
+            "$ref": "#/components/schemas/point"
+          },
+          "scale": {
+            "$ref": "#/components/schemas/point"
+          }
+        }
+      },
+      "spatial_representation_PUT": {
+        "required": [
+          "documentId",
+          "location",
+          "rotation",
+          "scale"
+        ],
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string"
+          },
+          "alignment": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "$ref": "#/components/schemas/point"
+          },
+          "rotation": {
+            "$ref": "#/components/schemas/point"
+          },
+          "scale": {
+            "$ref": "#/components/schemas/point"
+          }
+        }
+      },
       "document_reference_GET": {
         "required": [
           "guid"
@@ -4432,6 +5067,38 @@
           }
         }
       },
+      "viewpoint_PUT": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "nullable": true
+          },
+          "orthogonal_camera": {
+            "$ref": "#/components/schemas/orthogonal_camera"
+          },
+          "perspective_camera": {
+            "$ref": "#/components/schemas/perspective_camera"
+          },
+          "lines": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/line"
+            }
+          },
+          "clipping_planes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/clipping_plane"
+            }
+          },
+          "components": {
+            "$ref": "#/components/schemas/components"
+          }
+        }
+      },
       "visibility": {
         "type": "object",
         "properties": {
@@ -4602,6 +5269,12 @@
         "schema": {
           "type": "string"
         }
+      }
+    },
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
       }
     }
   }
