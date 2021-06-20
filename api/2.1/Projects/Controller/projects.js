@@ -37,7 +37,7 @@ exports.projects_get_all = (req, res, next) => {
   Projects.find({
     user: jwt.decode(req.headers.authorization.split(" ")[1]).id,
   })
-    .select("project_id name")
+    .select("project_id name -_id")
     .exec()
     .then((docs) => {
       res.status(200).json(docs);

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const checkAuth = require("../../Authentication/Middleware/check-auth");
 const checkBindings = require("../../Topics/Middleware/checkBinding");
+const checkAdmin = require("../../Authentication/Middleware/check_admin");
 
 const ProjectController = require("../Controller/projects");
 const TopicsController = require("../../Topics/Controller/topics");
@@ -101,10 +102,11 @@ router.put(
   DocumentsController.spatial_representation_update
 );
 
-router.post("/", ProjectController.project_create);
+router.post("/", checkAdmin, ProjectController.project_create);
 
 router.post(
   "/:projectId/extensions",
+  checkAdmin,
   ProjectController.project_extensions_create
 );
 
