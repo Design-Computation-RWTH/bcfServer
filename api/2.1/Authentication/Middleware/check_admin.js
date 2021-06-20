@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
     User.findOne({ id: decoded.id })
       .exec(console.log("Test"))
       .then((user) => {
-        if (user[0].role == "admin") {
+        if (user.role == "admin") {
           next();
         } else {
           return res.status(401).json({
