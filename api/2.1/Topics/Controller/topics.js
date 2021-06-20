@@ -41,6 +41,7 @@ exports.topics_get_all = (req, res, next) => {
   module.exports = conn;
 
   console.log(req.query);
+  console.log("Test");
 
   var myQuery = req.query.$filter;
   var parsing = parser.parse("$filter=" + myQuery);
