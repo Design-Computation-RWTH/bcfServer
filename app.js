@@ -7,6 +7,9 @@ mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
 const app = express();
 
+const swaggerUi = require("swagger-ui-express"),
+  swaggerDocument = require("./bcfAPI.json");
+
 // BCF implementation
 
 const versionsRoutes = require("./api/Public/Routes/versions");
@@ -64,6 +67,8 @@ app.use("/bcf/2.1/auth", authRoutes);
 app.use("/bcf/2.1/current-user/", checkAuth, userRoutes);
 // The Project Routes serve as distributors to the subroutes of the corresponding project
 app.use("/bcf/2.1/projects/", checkAuth, projectsRoutes);
+
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Error Handlers
 
