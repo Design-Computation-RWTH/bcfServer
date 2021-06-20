@@ -8,9 +8,10 @@ module.exports = (req, res, next) => {
     req.userData = decoded;
     console.log(decoded.id);
     User.findOne({ id: decoded.id })
-      .exec(console.log("Test"))
+      .exec()
       .then((user) => {
         if (user.role == "admin") {
+          console.log("Accepted");
           next();
         } else {
           return res.status(401).json({
