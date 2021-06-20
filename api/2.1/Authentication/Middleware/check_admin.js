@@ -7,8 +7,8 @@ module.exports = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     req.userData = decoded;
     console.log(decoded.id);
-    User.find({ id: decoded.id })
-      .exec()
+    User.findOne({ id: decoded.id })
+      .exec(console.log("Test"))
       .then((user) => {
         if (user[0].role == "admin") {
           next();
