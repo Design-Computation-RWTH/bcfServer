@@ -88,36 +88,64 @@ exports.comment_create = (req, res, next) => {
   Comments = conn.model("Comments", require("../Models/comments"));
   module.exports = conn;
 
-  const comment = new Comments({
-    _id: new mongoose.Types.ObjectId(),
-    guid: uuid.v4(),
-    date: timestamp,
-    author: jwt.decode(req.headers.authorization.split(" ")[1]).id,
-    comment: req.body.comment,
-    reply_to_comment_guid: req.body.reply_to_comment_guid,
-    viewpoint_guid: req.body.viewpoint_guid,
-    topic_guid: topicId,
-  });
+  var newGuid;
 
-  comment
-    .save()
-    .then((result) => {
-      console.log(result);
-      res.status(201).json({
-        guid: result.guid,
-        date: result.creation,
-        author: result.author,
-        comment: result.comment,
-        reply_to_comment_guid: result.reply_to_comment_guid,
-        viewpoint_guid: result.viewpoint_guid,
-        topic_guid: result.topic_guid,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-      });
+  if (req.body.guid) {
+    newGuid = req.body.guid;
+  } else {
+    newGuid = uuid.v4();
+  }
+
+  var selectString;
+
+  if (req.params.bcfVersion == "2.1") {
+    selectString = "-_id -__v -server_assigned_id";
+  } else if (req.params.bcfVersion == "3.0") {
+    selectString = "-_id -__v";
+  }
+
+  Comments.findOne({ guid: newGuid })
+    .exec()
+    .then((doc) => {
+      if (doc) {
+        console.log("Comment does exist");
+        res.status(500).json({
+          error: "Comment GUID already exists",
+        });
+        return;
+      } else {
+        const comment = new Comments({
+          _id: new mongoose.Types.ObjectId(),
+          guid: newGuid,
+          date: timestamp,
+          author: jwt.decode(req.headers.authorization.split(" ")[1]).id,
+          comment: req.body.comment,
+          reply_to_comment_guid: req.body.reply_to_comment_guid,
+          viewpoint_guid: req.body.viewpoint_guid,
+          topic_guid: topicId,
+        });
+
+        comment
+          .save()
+          .then((result) => {
+            console.log(result);
+            res.status(201).json({
+              guid: result.guid,
+              date: result.creation,
+              author: result.author,
+              comment: result.comment,
+              reply_to_comment_guid: result.reply_to_comment_guid,
+              viewpoint_guid: result.viewpoint_guid,
+              topic_guid: result.topic_guid,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+              error: err,
+            });
+          });
+      }
     });
 };
 

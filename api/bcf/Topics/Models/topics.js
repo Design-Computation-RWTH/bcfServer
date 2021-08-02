@@ -7,13 +7,9 @@ const topicsSchema = new Schema({
     type: String,
     required: true,
   },
-  creation_author: {
+  server_assigned_id: {
     type: String,
     required: false,
-  },
-  creation_date: {
-    type: String,
-    required: true,
   },
   topic_type: {
     type: String,
@@ -21,6 +17,10 @@ const topicsSchema = new Schema({
   },
   topic_status: {
     type: String,
+    required: false,
+  },
+  reference_links: {
+    type: Array,
     required: false,
   },
   title: {
@@ -31,15 +31,19 @@ const topicsSchema = new Schema({
     type: String,
     required: false,
   },
+  index: {
+    type: Number,
+    required: false,
+  },
   labels: {
     type: Array,
     required: false,
   },
-  assigned_to: {
+  creation_date: {
     type: String,
-    required: false,
+    required: true,
   },
-  modified_author: {
+  creation_author: {
     type: String,
     required: false,
   },
@@ -47,7 +51,23 @@ const topicsSchema = new Schema({
     type: Date,
     required: false,
   },
+  modified_author: {
+    type: String,
+    required: false,
+  },
+  assigned_to: {
+    type: String,
+    required: false,
+  },
   stage: {
+    type: String,
+    required: false,
+  },
+  description: {
+    type: String,
+    required: false,
+  },
+  due_date: {
     type: String,
     required: false,
   },

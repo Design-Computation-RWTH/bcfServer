@@ -275,11 +275,18 @@ exports.viewpoint_create = (req, res, next) => {
     snapshot_type: req.body.snapshot.snapshot_type,
     snapshot_data: data,
   };
-  console.log(req.body.originating_document);
-  //res.status(200);
+
+  var newGuid;
+
+  if (req.body.guid) {
+    newGuid = req.body.guid;
+  } else {
+    newGuid = uuid.v4();
+  }
+
   const viewpoint = new Viewpoints({
     _id: new mongoose.Types.ObjectId(),
-    guid: uuid.v4(),
+    guid: newGuid,
     date: timestamp,
     orthogonal_camera: req.body.orthogonal_camera,
     perspective_camera: req.body.perspective_camera,

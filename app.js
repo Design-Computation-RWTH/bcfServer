@@ -12,12 +12,9 @@ const swaggerUi = require("swagger-ui-express"),
 
 // BCF implementation
 
-const versionsRoutes = require("./api/Public/Routes/versions");
-const authRoutes = require("./api/2.1/Authentication/Routes/auth");
-const userRoutes = require("./api/2.1/User/Routes/user");
-const projectsRoutes = require("./api/2.1/Projects/Routes/projects");
+const routes = require("./api/routes");
 
-const checkAuth = require("./api/2.1/Authentication/Middleware/check-auth");
+const checkAuth = require("./api/bcf/Authentication/Middleware/check-auth");
 
 // Database connection
 
@@ -61,12 +58,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/bcf/", routes);
 // Routes which should handle requests
-app.use("/bcf/versions", versionsRoutes);
-app.use("/bcf/2.1/auth", authRoutes);
-app.use("/bcf/2.1/current-user/", checkAuth, userRoutes);
-// The Project Routes serve as distributors to the subroutes of the corresponding project
-app.use("/bcf/2.1/projects/", checkAuth, projectsRoutes);
 
 app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

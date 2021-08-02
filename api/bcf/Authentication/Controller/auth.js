@@ -129,6 +129,7 @@ exports.auth_login = (req, res, next) => {
               expiresIn: "7d",
             }
           );
+          //console.log("Test");
           return res.status(200).json({
             message: "Authentication successful",
             token: token,

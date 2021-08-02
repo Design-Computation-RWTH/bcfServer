@@ -36,35 +36,28 @@ exports.topics_get_all = (req, res, next) => {
   const id = req.params.projectId;
 
   const conn = checkCache(id);
-
   Topics = conn.model("Topics", require("../Models/topics"));
   module.exports = conn;
 
-  console.log(req.query);
-  console.log("Test");
+  // console.log(req.query);
 
-  var myQuery = req.query.$filter;
-  var parsing = parser.parse("$filter=" + myQuery);
-  console.log(JSON.stringify(parsing));
+  // var myQuery = req.query.$filter;
+  // var parsing = parser.parse("$filter=" + myQuery);
+  // console.log(JSON.stringify(parsing));
+
+  var selectString;
+
+  if (req.params.bcfVersion == "2.1") {
+    selectString = "-_id -__v -server_assigned_id";
+  } else if (req.params.bcfVersion == "3.0") {
+    selectString = "-_id -__v";
+  }
 
   Topics.find()
+    .select(selectString)
     .exec()
     .then((docs) => {
-      res.status(200).json(
-        docs.map((doc) => {
-          return {
-            guid: doc.guid,
-            creation_date: doc.creation_date,
-            creation_author: doc.creation_author,
-            topic_type: doc.topic_type,
-            topic_status: doc.topic_status,
-            title: doc.title,
-            priority: doc.priority,
-            labels: doc.labels,
-            assigned_to: doc.assigned_to,
-          };
-        })
-      );
+      res.status(200).json(docs);
     })
     .catch((err) => {
       res.status(500).json({
@@ -115,15 +108,18 @@ exports.topic_get = (req, res, next) => {
   Topics = conn.model("Topics", require("../Models/topics"));
   module.exports = conn;
 
+  var selectString;
+
+  if (req.params.bcfVersion == "2.1") {
+    selectString = "-_id -__v -server_assigned_id";
+  } else if (req.params.bcfVersion == "3.0") {
+    selectString = "-_id -__v";
+  }
+
   Topics.findOne({ guid: topicId })
+    .select(selectString)
     .exec()
     .then((doc) => {
-      const response = {
-        project_id: doc.project_id,
-        name: doc.name,
-        authorization: ["update"],
-      };
-      // console.log(uuid.v4())
       res.status(200).json(doc);
     })
     .catch((err) => {
@@ -135,13 +131,10 @@ exports.topic_get = (req, res, next) => {
 };
 
 exports.topic_create = (req, res, next) => {
-  console.log("Test");
-
   const id = req.params.projectId;
 
   const conn = checkCache(id);
 
-  console.log("Test");
   // TODO: Include Timezone
 
   const timestamp = new Date(Date.now()).toISOString();
@@ -149,43 +142,89 @@ exports.topic_create = (req, res, next) => {
   Topics = conn.model("Topics", require("../Models/topics"));
   module.exports = conn;
 
-  const topic = new Topics({
-    _id: new mongoose.Types.ObjectId(),
-    guid: uuid.v4(),
-    creation_date: timestamp,
-    creation_author: jwt.decode(req.headers.authorization.split(" ")[1]).id,
-    title: req.body.title,
-    topic_type: req.body.topic_type,
-    topic_status: req.body.topic_status,
-    priority: req.body.priority,
-    labels: req.body.labels,
-    assigned_to: req.body.assigned_to,
-    stage: req.body.stage,
-  });
+  var newGuid;
 
-  topic
-    .save()
-    .then((result) => {
-      console.log(result);
-      res.status(201).json({
-        _id: result._id,
-        guid: result.guid,
-        creation_date: result.creation_date,
-        creation_author: result.creation_author,
-        topic_type: result.topic_type,
-        topic_status: result.topic_status,
-        title: result.title,
-        priority: result.priority,
-        labels: result.labels,
-        assigned_to: result.assigned_to,
-        stage: result.stage,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-      });
+  if (req.body.guid) {
+    newGuid = req.body.guid;
+  } else {
+    newGuid = uuid.v4();
+  }
+
+  var selectString;
+
+  if (req.params.bcfVersion == "2.1") {
+    selectString = "-_id -__v -server_assigned_id";
+  } else if (req.params.bcfVersion == "3.0") {
+    selectString = "-_id -__v";
+  }
+
+  Topics.findOne({ guid: newGuid })
+    .exec()
+    .then((doc) => {
+      if (doc) {
+        res.status(500).json({
+          error: "GUID already exists",
+        });
+        return;
+      } else {
+        var mongoId = mongoose.Types.ObjectId();
+
+        const topic = new Topics({
+          _id: mongoId,
+          server_assigned_id: mongoId,
+          guid: newGuid,
+          creation_date: timestamp,
+          creation_author: jwt.decode(req.headers.authorization.split(" ")[1])
+            .id,
+          title: req.body.title,
+          topic_type: req.body.topic_type,
+          topic_status: req.body.topic_status,
+          priority: req.body.priority,
+          labels: req.body.labels,
+          assigned_to: req.body.assigned_to,
+          stage: req.body.stage,
+        });
+
+        topic
+          .save()
+          .then((result) => {
+            // console.log(result);
+            if (req.params.bcfVersion == "2.1") {
+              res.status(201).json({
+                guid: result.guid,
+                creation_date: result.creation_date,
+                creation_author: result.creation_author,
+                topic_type: result.topic_type,
+                topic_status: result.topic_status,
+                title: result.title,
+                priority: result.priority,
+                labels: result.labels,
+                assigned_to: result.assigned_to,
+                stage: result.stage,
+              });
+            } else if (req.params.bcfVersion == "3.0") {
+              res.status(201).json({
+                guid: result.guid,
+                creation_date: result.creation_date,
+                creation_author: result.creation_author,
+                topic_type: result.topic_type,
+                topic_status: result.topic_status,
+                title: result.title,
+                priority: result.priority,
+                labels: result.labels,
+                assigned_to: result.assigned_to,
+                stage: result.stage,
+              });
+              res.status(201).json(result);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+              error: err,
+            });
+          });
+      }
     });
 };
 
@@ -234,8 +273,6 @@ exports.topic_update = (req, res, next) => {
   const TopicId = req.params.topicId;
   const timestamp = new Date(Date.now()).toISOString();
 
-  console.log(TopicId);
-
   const conn = checkCache(id);
 
   Topics = conn.model("Topics", require("../Models/topics"));
@@ -248,23 +285,33 @@ exports.topic_update = (req, res, next) => {
   ).id;
   data["modified_date"] = timestamp;
 
-  console.log(data);
+  var selectString;
 
-  Topics.findOneAndUpdate({ guid: TopicId }, { $set: req.body }, { new: true })
+  if (req.params.bcfVersion == "2.1") {
+    selectString = "-_id -__v -server_assigned_id";
+  } else if (req.params.bcfVersion == "3.0") {
+    selectString = "-_id -__v";
+  }
+
+  Topics.findOneAndUpdate({ guid: TopicId }, { $set: data }, { new: true })
+    .select(selectString)
     .exec()
     .then((result) => {
-      res.status(200).json({
-        guid: result.guid,
-        creation_date: result.creation_date,
-        creation_author: result.creation_author,
-        topic_type: result.topic_type,
-        topic_status: result.topic_status,
-        title: result.title,
-        priority: result.priority,
-        labels: result.labels,
-        assigned_to: result.assigned_to,
-        stage: result.stage,
-      });
+      // res.status(200).json({
+      //   guid: result.guid,
+      //   creation_date: result.creation_date,
+      //   creation_author: result.creation_author,
+      //   modified_author: result.modified_author,
+      //   modified_date: result.modified_date,
+      //   topic_type: result.topic_type,
+      //   topic_status: result.topic_status,
+      //   title: result.title,
+      //   priority: result.priority,
+      //   labels: result.labels,
+      //   assigned_to: result.assigned_to,
+      //   stage: result.stage,
+      // });
+      res.status(200).json(result);
     })
     .catch((err) => {
       console.log(err);
