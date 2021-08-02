@@ -18,6 +18,8 @@ function setConnection(id) {
 }
 
 function checkCache(id) {
+  // console.log(mongoose.connections);
+
   // check if Connection is already defined
   if (cache == undefined) {
     cache = setConnection(id);
@@ -27,6 +29,15 @@ function checkCache(id) {
     if (cache.name == id) {
       return cache;
     } else {
+      var connections = mongoose.connections;
+      for (connection in connections) {
+        var connectionDict = connections[connection];
+        if (connectionDict.name == id) {
+          cache = connectionDict;
+          console.log("switched to existing cache");
+          return cache;
+        }
+      }
       cache = setConnection(id);
       return cache;
     }
