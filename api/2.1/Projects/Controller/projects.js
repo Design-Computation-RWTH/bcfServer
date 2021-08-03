@@ -120,13 +120,11 @@ exports.project_update = (req, res) => {
 };
 
 exports.project_create = (req, res) => {
-  // Projects = conn.model("Projects", require("../Models/projects"));
-  // module.exports = conn;
-
   const project = new Projects({
     _id: new mongoose.Types.ObjectId(),
     project_id: uuid.v4(),
     name: req.body.name,
+    // user: users,
   });
 
   project
@@ -147,7 +145,14 @@ exports.project_create = (req, res) => {
 exports.project_extensions_create = (req, res) => {
   const id = req.params.projectId;
 
-  const conn = checkCache(id);
+  var conn = checkCache("bcfServer");
+
+  Projects.findOneAndUpdate(
+    { project_id: id },
+    { user: req.body.user_id_type }
+  ).exec();
+
+  conn = checkCache(id);
 
   Extensions = conn.model("Extensions", require("../Models/extensions"));
   console.log(Extensions);
