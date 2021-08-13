@@ -87,6 +87,12 @@ router.get(
 router.put("/:projectId", ProjectController.project_update);
 
 router.put(
+  "/:projectId/extensions",
+  checkAdmin,
+  ProjectController.project_extensions_update
+);
+
+router.put(
   "/:projectId/topics/:topicId",
   checkBindings,
   TopicsController.topic_update

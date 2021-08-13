@@ -120,11 +120,19 @@ exports.project_update = (req, res) => {
 };
 
 exports.project_create = (req, res) => {
+  var id;
+
+  if (req.body.project_id) {
+    id = req.body.project_id;
+  } else {
+    id = uuid.v4();
+  }
+
   const project = new Projects({
     _id: new mongoose.Types.ObjectId(),
-    project_id: uuid.v4(),
+    project_id: id,
     name: req.body.name,
-    // user: users,
+    user: req.body.user,
   });
 
   project
@@ -149,7 +157,7 @@ exports.project_extensions_create = (req, res) => {
 
   Projects.findOneAndUpdate(
     { project_id: id },
-    { user: req.body.user_id_type }
+    { $push: { user: req.body.user_id_type } }
   ).exec();
 
   conn = checkCache(id);
@@ -238,6 +246,65 @@ exports.project_extensions = (req, res) => {
       });
     })
     .catch((err) => {
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
+exports.project_extensions_update = (req, res) => {
+  const id = req.params.projectId;
+
+  var conn = checkCache("bcfServer");
+  var ObjectId;
+
+  Projects.findOneAndUpdate(
+    { project_id: id },
+    { $set: { user: req.body.user_id_type } }
+  ).exec();
+
+  conn = checkCache(id);
+
+  Extensions = conn.model("Extensions", require("../Models/extensions"));
+  // console.log(Extensions);
+  module.exports = conn;
+
+  Extensions.findOne({}, {}, { sort: { _id: -1 } })
+    .select("_id")
+    .exec()
+    .then((result) => {
+      if (result == null) {
+        res.status(500).json({ error: "No extensions defined yet" });
+      } else {
+        ObjectId = result._id;
+
+        Extensions.findOneAndUpdate(
+          { _id: ObjectId },
+          { $set: req.body },
+          { new: true }
+        )
+          .exec()
+          .then((result) => {
+            res.status(200).json({
+              topic_type: result.topic_type,
+              topic_status: result.topic_status,
+              priority: result.priority,
+              user_id_type: result.user_id_type,
+              stage: result.stage,
+              project_actions: result.project_actions,
+              topic_actions: result.topic_actions,
+              comment_actions: result.topic_actions,
+            });
+          })
+          .catch((err) => {
+            res.status(500).json({
+              error: err,
+            });
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
       res.status(500).json({
         error: err,
       });
